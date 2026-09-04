@@ -1,17 +1,18 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import Home from "./pages/Home";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import ExploreBusiness from "./pages/ExploreBusiness";
+import StartBusiness from "./pages/StartBusiness";
+import Learn from "./pages/Learn";
 import About from "./pages/About";
 
 function App() {
   return (
     <Router>
-      <nav style={{ padding: "10px" }}>
-        <Link to="/" style={{ marginRight: "10px" }}>Home</Link>
-        <Link to="/about">About</Link>
-      </nav>
-
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/explore" element={<ExploreBusiness />} />
+        <Route path="/start" element={<StartBusiness />} />
+        <Route path="/learn" element={<Learn />} />
         <Route path="/about" element={<About />} />
       </Routes>
     </Router>

@@ -1,0 +1,237 @@
+/* Palette variables */
+:root {
+  --plum: #8E2857;
+  --saffron: #F4A340;
+  --cream: #FFF9F3;
+  --green: #4F8A6D;
+  --charcoal: #29252A;
+}
+
+.landing-container {
+  background-color: var(--cream);
+  color: var(--charcoal);
+  font-family: Arial, sans-serif;
+  padding: 0 1rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* -- Hero -- */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  gap: 2rem;
+}
+
+.hero-text {
+  max-width: 600px;
+  text-align: center;
+}
+
+.hero-text h1 {
+  color: var(--plum);
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+}
+
+.tagline {
+  color: var(--saffron);
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.search-form input,
+.search-form select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 2px solid var(--plum);
+  border-radius: 4px;
+  min-width: 140px;
+}
+
+.search-form button {
+  background-color: var(--saffron);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.hero-image img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* -- Categories -- */
+.categories-section {
+  margin-top: 3rem;
+}
+
+.categories-section h2 {
+  color: var(--plum);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+/* -- How It Works -- */
+.how-it-works {
+  margin-top: 3rem;
+}
+
+.how-it-works h2 {
+  color: var(--plum);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.how-steps {
+  padding-left: 1.25rem;
+}
+
+.how-steps li {
+  margin-bottom: 0.5rem;
+}
+
+/* -- Featured Businesses -- */
+.featured-businesses {
+  margin-top: 3rem;
+}
+
+.featured-businesses h2 {
+  color: var(--plum);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.businesses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* -- Learning Resources -- */
+.learning-resources {
+  margin-top: 3rem;
+}
+
+.learning-resources h2 {
+  color: var(--plum);
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.resources-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.resources-list li {
+  margin-bottom: 0.5rem;
+}
+
+.resources-list a {
+  text-decoration: none;
+  color: var(--green);
+}
+
+.resources-list a:hover,
+.resources-list a:focus {
+  text-decoration: underline;
+}
+
+/* -- Success Story -- */
+.success-story {
+  margin-top: 3rem;
+  background-color: var(--saffron);
+  color: var(--cream);
+  padding: 1.5rem;
+  border-radius: 8px;
+  font-style: italic;
+}
+
+.success-story blockquote {
+  margin: 0;
+}
+
+.success-story cite {
+  display: block;
+  margin-top: 1rem;
+  font-style: normal;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* -- Impact Stats -- */
+.impact-stats {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.impact-stats h2 {
+  color: var(--plum);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.stats-grid div {
+  flex: 1 1 120px;
+  background-color: var(--green);
+  color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  font-weight: bold;
+}
+
+/* -- Final CTA -- */
+.final-cta {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.final-cta h2 {
+  font-size: 1.8rem;
+  color: var(--plum);
+  margin-bottom: 1rem;
+}
+
+.join-button {
+  background-color: var(--plum);
+  color: var(--cream);
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.join-button:hover,
+.join-button:focus {
+  background-color: var(--green);
+  color: white;
+}
