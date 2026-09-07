@@ -12,7 +12,9 @@ export default function Navbar() {
     <nav className="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-brand">
         <Link to="/" className="logo" aria-label="Aatmanirbhar Nari Home">
-          <img src="/logo-placeholder.png" alt="Aatmanirbhar Nari logo" />
+          <span className="logo-mark" aria-hidden="true">
+            AN
+          </span>
           <span>Aatmanirbhar Nari</span>
         </Link>
 
@@ -55,7 +57,11 @@ export default function Navbar() {
           <button className="login-btn" type="button">
             Login
           </button>
-          <Link to="/start" className="join-btn" onClick={() => setMenuOpen(false)}>
+          <Link
+            to="/start"
+            className="join-btn"
+            onClick={() => setMenuOpen(false)}
+          >
             Join as Entrepreneur
           </Link>
         </div>
