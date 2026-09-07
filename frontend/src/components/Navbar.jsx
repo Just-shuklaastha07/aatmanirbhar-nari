@@ -6,42 +6,55 @@ export default function Navbar() {
   const [language, setLanguage] = useState("EN");
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
 
   return (
-    <nav className="navbar" role="navigation" aria-label="Main navigation">
+    <nav className="navbar" aria-label="Main navigation">
       <div className="navbar-brand">
-        <Link to="/" className="logo" aria-label="Aatmanirbhar Nari Home">
+        <Link
+          to="/"
+          className="logo"
+          aria-label="Aatmanirbhar Nari home"
+          onClick={closeMenu}
+        >
           <span className="logo-mark" aria-hidden="true">
             AN
           </span>
+
           <span>Aatmanirbhar Nari</span>
         </Link>
 
         <button
+          type="button"
           className="menu-toggle"
-          aria-label="Toggle menu"
+          aria-label="Toggle navigation menu"
           aria-expanded={menuOpen}
-          onClick={toggleMenu}
+          onClick={() => setMenuOpen((previous) => !previous)}
         >
           ☰
         </button>
       </div>
 
       <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-        <NavLink to="/" onClick={() => setMenuOpen(false)}>
+        <NavLink to="/" onClick={closeMenu}>
           Home
         </NavLink>
-        <NavLink to="/explore" onClick={() => setMenuOpen(false)}>
+
+        <NavLink to="/explore" onClick={closeMenu}>
           Explore Businesses
         </NavLink>
-        <NavLink to="/start" onClick={() => setMenuOpen(false)}>
+
+        <NavLink to="/start" onClick={closeMenu}>
           Start Your Business
         </NavLink>
-        <NavLink to="/learn" onClick={() => setMenuOpen(false)}>
+
+        <NavLink to="/learn" onClick={closeMenu}>
           Learn
         </NavLink>
-        <NavLink to="/about" onClick={() => setMenuOpen(false)}>
+
+        <NavLink to="/about" onClick={closeMenu}>
           About
         </NavLink>
 
@@ -49,18 +62,20 @@ export default function Navbar() {
           <select
             aria-label="Select language"
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(event) => setLanguage(event.target.value)}
           >
             <option value="EN">English</option>
             <option value="HI">हिन्दी</option>
           </select>
-          <button className="login-btn" type="button">
+
+          <Link to="/login" className="login-btn" onClick={closeMenu}>
             Login
-          </button>
+          </Link>
+
           <Link
-            to="/start"
+            to="/register/entrepreneur"
             className="join-btn"
-            onClick={() => setMenuOpen(false)}
+            onClick={closeMenu}
           >
             Join as Entrepreneur
           </Link>

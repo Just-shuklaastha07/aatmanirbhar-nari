@@ -1,0 +1,309 @@
+import { useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import "./Auth.css";
+
+const initialForm = {
+  fullName: "",
+  email: "",
+  mobile: "",
+  city: "",
+  language: "English",
+  password: "",
+  confirmPassword: "",
+  termsAccepted: false,
+};
+
+export default function Register() {
+  const { role } = useParams();
+
+  const [form, setForm] = useState(initialForm);
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const validRoles = ["entrepreneur", "customer"];
+
+  if (!validRoles.includes(role)) {
+    return <Navigate to="/select-role" replace />;
+  }
+
+  const roleName = role === "entrepreneur" ? "Entrepreneur" : "Customer";
+
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+
+    setForm((previous) => ({
+      ...previous,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    setErrors((previous) => ({
+      ...previous,
+      [name]: "",
+    }));
+
+    setMessage("");
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobilePattern = /^[6-9]\d{9}$/;
+
+    if (!form.fullName.trim()) {
+      newErrors.fullName = "Full name is required.";
+    } else if (form.fullName.trim().length < 3) {
+      newErrors.fullName = "Enter at least three characters.";
+    }
+
+    if (!form.email.trim()) {
+      newErrors.email = "Email address is required.";
+    } else if (!emailPattern.test(form.email)) {
+      newErrors.email = "Enter a valid email address.";
+    }
+
+    if (!form.mobile.trim()) {
+      newErrors.mobile = "Mobile number is required.";
+    } else if (!mobilePattern.test(form.mobile)) {
+      newErrors.mobile = "Enter a valid 10-digit Indian mobile number.";
+    }
+
+    if (!form.city.trim()) {
+      newErrors.city = "City is required.";
+    }
+
+    if (!form.password) {
+      newErrors.password = "Password is required.";
+    } else if (form.password.length < 8) {
+      newErrors.password = "Password must contain at least 8 characters.";
+    }
+
+    if (!form.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password.";
+    } else if (form.password !== form.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match.";
+    }
+
+    if (!form.termsAccepted) {
+      newErrors.termsAccepted = "You must accept the terms and conditions.";
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setMessage("");
+      return;
+    }
+
+    console.log("Registration details:", {
+      ...form,
+      role,
+    });
+
+    setMessage(
+      `${roleName} registration form submitted successfully. Backend connection will be added next.`
+    );
+
+    setForm(initialForm);
+  };
+
+  return (
+    <>
+      <Navbar />
+
+      <main className="auth-page">
+        <section className="auth-card">
+          <p className="auth-label">Create your account</p>
+          <h1>Register as {roleName}</h1>
+
+          <p className="auth-subtitle">
+            Enter your details to begin your journey.
+          </p>
+
+          {message && (
+            <div className="auth-success" role="status">
+              {message}
+            </div>
+          )}
+
+          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+            <div className="form-group full-width">
+              <label htmlFor="fullName">Full name</label>
+              <input
+                id="fullName"
+                type="text"
+                name="fullName"
+                value={form.fullName}
+                onChange={handleChange}
+                placeholder="Enter your full name"
+              />
+              {errors.fullName && (
+                <span className="form-error">{errors.fullName}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="email">Email address</label>
+              <input
+                id="email"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="name@example.com"
+              />
+              {errors.email && (
+                <span className="form-error">{errors.email}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="mobile">Mobile number</label>
+              <input
+                id="mobile"
+                type="tel"
+                name="mobile"
+                value={form.mobile}
+                onChange={handleChange}
+                placeholder="10-digit mobile number"
+                maxLength="10"
+              />
+              {errors.mobile && (
+                <span className="form-error">{errors.mobile}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="city">City</label>
+              <input
+                id="city"
+                type="text"
+                name="city"
+                value={form.city}
+                onChange={handleChange}
+                placeholder="Enter your city"
+              />
+              {errors.city && (
+                <span className="form-error">{errors.city}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="language">Preferred language</label>
+              <select
+                id="language"
+                name="language"
+                value={form.language}
+                onChange={handleChange}
+              >
+                <option value="English">English</option>
+                <option value="Hindi">हिन्दी</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+
+              <div className="password-field">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Minimum 8 characters"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((previous) => !previous)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+
+              {errors.password && (
+                <span className="form-error">{errors.password}</span>
+              )}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm password</label>
+
+              <div className="password-field">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Enter password again"
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword((previous) => !previous)
+                  }
+                >
+                  {showConfirmPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+
+              {errors.confirmPassword && (
+                <span className="form-error">{errors.confirmPassword}</span>
+              )}
+            </div>
+
+            <div className="form-group full-width">
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  name="termsAccepted"
+                  checked={form.termsAccepted}
+                  onChange={handleChange}
+                />
+
+                <span>
+                  I agree to the terms and privacy policy.
+                </span>
+              </label>
+
+              {errors.termsAccepted && (
+                <span className="form-error">{errors.termsAccepted}</span>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="auth-submit-button full-width"
+            >
+              Create {roleName} Account
+            </button>
+          </form>
+
+          <p className="auth-switch">
+            Already have an account? <Link to="/login">Log in</Link>
+          </p>
+
+          <p className="auth-switch">
+            Selected the wrong role?{" "}
+            <Link to="/select-role">Change role</Link>
+          </p>
+        </section>
+      </main>
+
+      <Footer />
+    </>
+  );
+}
