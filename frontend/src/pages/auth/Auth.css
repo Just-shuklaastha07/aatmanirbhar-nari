@@ -270,3 +270,16 @@
 .auth-subtitle {
   margin-top: 16px;
 }
+.auth-error-message {
+  margin-bottom: 22px;
+  padding: 13px;
+  color: #9b1c1c;
+  background: #fde8e8;
+  border: 1px solid #efa7a7;
+  border-radius: 8px;
+}
+
+.auth-submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}

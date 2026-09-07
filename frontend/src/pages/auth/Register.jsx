@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import {
+  Link,
+  Navigate,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useAuth } from "../../context/AuthContext";
 import "./Auth.css";
 
 const initialForm = {
@@ -17,12 +24,18 @@ const initialForm = {
 
 export default function Register() {
   const { role } = useParams();
+  const navigate = useNavigate();
+  const { register } = useAuth();
 
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState(false);
 
   const validRoles = ["entrepreneur", "customer"];
 
@@ -30,45 +43,50 @@ export default function Register() {
     return <Navigate to="/select-role" replace />;
   }
 
-  const roleName = role === "entrepreneur" ? "Entrepreneur" : "Customer";
+  const roleName =
+    role === "entrepreneur" ? "Entrepreneur" : "Customer";
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
 
-    setForm((previous) => ({
-      ...previous,
+    setForm((previousForm) => ({
+      ...previousForm,
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    setErrors((previous) => ({
-      ...previous,
+    setErrors((previousErrors) => ({
+      ...previousErrors,
       [name]: "",
     }));
 
-    setMessage("");
+    setApiError("");
+    setSuccessMessage("");
   };
 
   const validateForm = () => {
     const newErrors = {};
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[6-9]\d{9}$/;
 
     if (!form.fullName.trim()) {
       newErrors.fullName = "Full name is required.";
     } else if (form.fullName.trim().length < 3) {
-      newErrors.fullName = "Enter at least three characters.";
+      newErrors.fullName =
+        "Full name must contain at least 3 characters.";
     }
 
     if (!form.email.trim()) {
       newErrors.email = "Email address is required.";
-    } else if (!emailPattern.test(form.email)) {
+    } else if (!emailPattern.test(form.email.trim())) {
       newErrors.email = "Enter a valid email address.";
     }
 
     if (!form.mobile.trim()) {
       newErrors.mobile = "Mobile number is required.";
-    } else if (!mobilePattern.test(form.mobile)) {
-      newErrors.mobile = "Enter a valid 10-digit Indian mobile number.";
+    } else if (!mobilePattern.test(form.mobile.trim())) {
+      newErrors.mobile =
+        "Enter a valid 10-digit Indian mobile number.";
     }
 
     if (!form.city.trim()) {
@@ -78,43 +96,68 @@ export default function Register() {
     if (!form.password) {
       newErrors.password = "Password is required.";
     } else if (form.password.length < 8) {
-      newErrors.password = "Password must contain at least 8 characters.";
+      newErrors.password =
+        "Password must contain at least 8 characters.";
     }
 
     if (!form.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password.";
+      newErrors.confirmPassword =
+        "Please confirm your password.";
     } else if (form.password !== form.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
     }
 
     if (!form.termsAccepted) {
-      newErrors.termsAccepted = "You must accept the terms and conditions.";
+      newErrors.termsAccepted =
+        "You must accept the terms and privacy policy.";
     }
 
     return newErrors;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const validationErrors = validateForm();
+
     setErrors(validationErrors);
+    setApiError("");
+    setSuccessMessage("");
 
     if (Object.keys(validationErrors).length > 0) {
-      setMessage("");
       return;
     }
 
-    console.log("Registration details:", {
-      ...form,
-      role,
-    });
+    try {
+      setLoading(true);
 
-    setMessage(
-      `${roleName} registration form submitted successfully. Backend connection will be added next.`
-    );
+      await register({
+        fullName: form.fullName.trim(),
+        email: form.email.trim().toLowerCase(),
+        mobile: form.mobile.trim(),
+        city: form.city.trim(),
+        language: form.language,
+        password: form.password,
+        role,
+      });
 
-    setForm(initialForm);
+      setSuccessMessage("Account created successfully!");
+
+      setTimeout(() => {
+        if (role === "entrepreneur") {
+          navigate("/start");
+        } else {
+          navigate("/explore");
+        }
+      }, 1000);
+    } catch (error) {
+      setApiError(
+        error.message ||
+          "Unable to create your account. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -124,21 +167,33 @@ export default function Register() {
       <main className="auth-page">
         <section className="auth-card">
           <p className="auth-label">Create your account</p>
+
           <h1>Register as {roleName}</h1>
 
           <p className="auth-subtitle">
             Enter your details to begin your journey.
           </p>
 
-          {message && (
+          {successMessage && (
             <div className="auth-success" role="status">
-              {message}
+              {successMessage}
             </div>
           )}
 
-          <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          {apiError && (
+            <div className="auth-error-message" role="alert">
+              {apiError}
+            </div>
+          )}
+
+          <form
+            className="auth-form"
+            onSubmit={handleSubmit}
+            noValidate
+          >
             <div className="form-group full-width">
               <label htmlFor="fullName">Full name</label>
+
               <input
                 id="fullName"
                 type="text"
@@ -146,29 +201,41 @@ export default function Register() {
                 value={form.fullName}
                 onChange={handleChange}
                 placeholder="Enter your full name"
+                autoComplete="name"
               />
+
               {errors.fullName && (
-                <span className="form-error">{errors.fullName}</span>
+                <span className="form-error">
+                  {errors.fullName}
+                </span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="email">Email address</label>
+              <label htmlFor="registerEmail">
+                Email address
+              </label>
+
               <input
-                id="email"
+                id="registerEmail"
                 type="email"
                 name="email"
                 value={form.email}
                 onChange={handleChange}
                 placeholder="name@example.com"
+                autoComplete="email"
               />
+
               {errors.email && (
-                <span className="form-error">{errors.email}</span>
+                <span className="form-error">
+                  {errors.email}
+                </span>
               )}
             </div>
 
             <div className="form-group">
               <label htmlFor="mobile">Mobile number</label>
+
               <input
                 id="mobile"
                 type="tel"
@@ -177,14 +244,20 @@ export default function Register() {
                 onChange={handleChange}
                 placeholder="10-digit mobile number"
                 maxLength="10"
+                inputMode="numeric"
+                autoComplete="tel"
               />
+
               {errors.mobile && (
-                <span className="form-error">{errors.mobile}</span>
+                <span className="form-error">
+                  {errors.mobile}
+                </span>
               )}
             </div>
 
             <div className="form-group">
               <label htmlFor="city">City</label>
+
               <input
                 id="city"
                 type="text"
@@ -192,14 +265,21 @@ export default function Register() {
                 value={form.city}
                 onChange={handleChange}
                 placeholder="Enter your city"
+                autoComplete="address-level2"
               />
+
               {errors.city && (
-                <span className="form-error">{errors.city}</span>
+                <span className="form-error">
+                  {errors.city}
+                </span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="language">Preferred language</label>
+              <label htmlFor="language">
+                Preferred language
+              </label>
+
               <select
                 id="language"
                 name="language"
@@ -212,48 +292,72 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="registerPassword">
+                Password
+              </label>
 
               <div className="password-field">
                 <input
-                  id="password"
+                  id="registerPassword"
                   type={showPassword ? "text" : "password"}
                   name="password"
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Minimum 8 characters"
+                  autoComplete="new-password"
                 />
 
                 <button
                   type="button"
-                  onClick={() => setShowPassword((previous) => !previous)}
+                  onClick={() =>
+                    setShowPassword((previous) => !previous)
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
 
               {errors.password && (
-                <span className="form-error">{errors.password}</span>
+                <span className="form-error">
+                  {errors.password}
+                </span>
               )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Confirm password</label>
+              <label htmlFor="confirmPassword">
+                Confirm password
+              </label>
 
               <div className="password-field">
                 <input
                   id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
+                  type={
+                    showConfirmPassword ? "text" : "password"
+                  }
                   name="confirmPassword"
                   value={form.confirmPassword}
                   onChange={handleChange}
                   placeholder="Enter password again"
+                  autoComplete="new-password"
                 />
 
                 <button
                   type="button"
                   onClick={() =>
-                    setShowConfirmPassword((previous) => !previous)
+                    setShowConfirmPassword(
+                      (previous) => !previous
+                    )
+                  }
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide confirmation password"
+                      : "Show confirmation password"
                   }
                 >
                   {showConfirmPassword ? "Hide" : "Show"}
@@ -261,7 +365,9 @@ export default function Register() {
               </div>
 
               {errors.confirmPassword && (
-                <span className="form-error">{errors.confirmPassword}</span>
+                <span className="form-error">
+                  {errors.confirmPassword}
+                </span>
               )}
             </div>
 
@@ -280,20 +386,26 @@ export default function Register() {
               </label>
 
               {errors.termsAccepted && (
-                <span className="form-error">{errors.termsAccepted}</span>
+                <span className="form-error">
+                  {errors.termsAccepted}
+                </span>
               )}
             </div>
 
             <button
               type="submit"
               className="auth-submit-button full-width"
+              disabled={loading}
             >
-              Create {roleName} Account
+              {loading
+                ? "Creating Account..."
+                : `Create ${roleName} Account`}
             </button>
           </form>
 
           <p className="auth-switch">
-            Already have an account? <Link to="/login">Log in</Link>
+            Already have an account?{" "}
+            <Link to="/login">Log in</Link>
           </p>
 
           <p className="auth-switch">

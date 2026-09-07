@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useAuth } from "../../context/AuthContext";
 import "./Auth.css";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -13,32 +18,35 @@ export default function Login() {
   });
 
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
 
-    setForm((previous) => ({
-      ...previous,
+    setForm((previousForm) => ({
+      ...previousForm,
       [name]: type === "checkbox" ? checked : value,
     }));
 
-    setErrors((previous) => ({
-      ...previous,
+    setErrors((previousErrors) => ({
+      ...previousErrors,
       [name]: "",
     }));
+
+    setApiError("");
+    setSuccessMessage("");
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
+  const validateForm = () => {
     const newErrors = {};
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!form.email.trim()) {
       newErrors.email = "Email address is required.";
-    } else if (!emailPattern.test(form.email)) {
+    } else if (!emailPattern.test(form.email.trim())) {
       newErrors.email = "Enter a valid email address.";
     }
 
@@ -46,18 +54,54 @@ export default function Login() {
       newErrors.password = "Password is required.";
     }
 
-    setErrors(newErrors);
+    if (!form.role) {
+      newErrors.role = "Please select your role.";
+    }
 
-    if (Object.keys(newErrors).length > 0) {
-      setMessage("");
+    return newErrors;
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const validationErrors = validateForm();
+
+    setErrors(validationErrors);
+    setApiError("");
+    setSuccessMessage("");
+
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
-    console.log("Login details:", form);
+    try {
+      setLoading(true);
 
-    setMessage(
-      "Login form submitted successfully. Backend connection will be added next."
-    );
+      const data = await login({
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+        role: form.role,
+      });
+
+      setSuccessMessage("Logged in successfully!");
+
+      setTimeout(() => {
+        if (data.user.role === "entrepreneur") {
+          navigate("/start");
+        } else if (data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/explore");
+        }
+      }, 800);
+    } catch (error) {
+      setApiError(
+        error.message ||
+          "Unable to log in. Please check your details."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -67,21 +111,33 @@ export default function Login() {
       <main className="auth-page">
         <section className="auth-card auth-card-small">
           <p className="auth-label">Welcome back</p>
+
           <h1>Log in to your account</h1>
 
           <p className="auth-subtitle">
             Continue managing or discovering local businesses.
           </p>
 
-          {message && (
+          {successMessage && (
             <div className="auth-success" role="status">
-              {message}
+              {successMessage}
             </div>
           )}
 
-          <form className="auth-form single-column" onSubmit={handleSubmit}>
+          {apiError && (
+            <div className="auth-error-message" role="alert">
+              {apiError}
+            </div>
+          )}
+
+          <form
+            className="auth-form single-column"
+            onSubmit={handleSubmit}
+            noValidate
+          >
             <div className="form-group">
               <label htmlFor="loginRole">Login as</label>
+
               <select
                 id="loginRole"
                 name="role"
@@ -89,13 +145,24 @@ export default function Login() {
                 onChange={handleChange}
               >
                 <option value="customer">Customer</option>
-                <option value="entrepreneur">Entrepreneur</option>
+                <option value="entrepreneur">
+                  Entrepreneur
+                </option>
                 <option value="admin">Administrator</option>
               </select>
+
+              {errors.role && (
+                <span className="form-error">
+                  {errors.role}
+                </span>
+              )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="loginEmail">Email address</label>
+              <label htmlFor="loginEmail">
+                Email address
+              </label>
+
               <input
                 id="loginEmail"
                 type="email"
@@ -103,9 +170,13 @@ export default function Login() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="name@example.com"
+                autoComplete="email"
               />
+
               {errors.email && (
-                <span className="form-error">{errors.email}</span>
+                <span className="form-error">
+                  {errors.email}
+                </span>
               )}
             </div>
 
@@ -120,18 +191,28 @@ export default function Login() {
                   value={form.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                 />
 
                 <button
                   type="button"
-                  onClick={() => setShowPassword((previous) => !previous)}
+                  onClick={() =>
+                    setShowPassword((previous) => !previous)
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
               </div>
 
               {errors.password && (
-                <span className="form-error">{errors.password}</span>
+                <span className="form-error">
+                  {errors.password}
+                </span>
               )}
             </div>
 
@@ -143,14 +224,21 @@ export default function Login() {
                   checked={form.rememberMe}
                   onChange={handleChange}
                 />
+
                 <span>Remember me</span>
               </label>
 
-              <Link to="/forgot-password">Forgot password?</Link>
+              <Link to="/forgot-password">
+                Forgot password?
+              </Link>
             </div>
 
-            <button type="submit" className="auth-submit-button">
-              Log In
+            <button
+              type="submit"
+              className="auth-submit-button"
+              disabled={loading}
+            >
+              {loading ? "Logging In..." : "Log In"}
             </button>
           </form>
 
