@@ -1,0 +1,277 @@
+.business-onboarding {
+  min-height: 100vh;
+  padding: 55px 20px;
+  background: var(--cream);
+}
+
+.business-form-card {
+  width: min(1050px, 100%);
+  margin: 0 auto;
+  padding: 38px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px rgba(41, 37, 42, 0.1);
+}
+
+.business-form-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.business-form-header h1 {
+  margin: 5px 0;
+  color: var(--plum);
+}
+
+.business-label {
+  color: var(--green);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.profile-summary {
+  display: flex;
+  min-width: 140px;
+  align-items: center;
+  flex-direction: column;
+}
+
+.profile-summary strong {
+  color: var(--plum);
+  font-size: 2rem;
+}
+
+.status-badge {
+  margin-top: 10px;
+  padding: 6px 13px;
+  border-radius: 20px;
+  text-transform: capitalize;
+}
+
+.status-badge.draft {
+  background: #eee;
+}
+
+.status-badge.pending {
+  color: #8a5700;
+  background: #fff1c2;
+}
+
+.status-badge.approved {
+  color: #17643d;
+  background: #dff5e8;
+}
+
+.status-badge.rejected {
+  color: #9b1c1c;
+  background: #fde2e2;
+}
+
+.step-progress {
+  display: grid;
+  margin: 35px 0;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.progress-step {
+  text-align: center;
+  color: #777;
+}
+
+.progress-step span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 7px;
+  place-items: center;
+  background: #eee;
+  border-radius: 50%;
+}
+
+.progress-step.active span {
+  color: white;
+  background: var(--plum);
+}
+
+.form-step h2 {
+  margin-bottom: 25px;
+  color: var(--plum);
+}
+
+.business-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.business-form-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-weight: 700;
+}
+
+.business-form-grid input,
+.business-form-grid select,
+.business-form-grid textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cebcc5;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.full-field {
+  grid-column: 1 / -1;
+}
+
+.days-grid {
+  display: flex;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.day-option {
+  padding: 9px 13px;
+  background: #f7e8ef;
+  border-radius: 7px;
+}
+
+.delivery-option {
+  justify-content: center;
+}
+
+.delivery-option input {
+  width: auto;
+}
+
+.form-navigation {
+  display: flex;
+  margin-top: 35px;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.form-navigation button {
+  padding: 11px 20px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 7px;
+}
+
+.previous-button {
+  background: white;
+  border: 1px solid var(--plum);
+}
+
+.draft-button {
+  color: var(--plum);
+  background: #f7e8ef;
+  border: none;
+}
+
+.next-button,
+.submit-button {
+  color: white;
+  background: var(--plum);
+  border: none;
+}
+
+.business-success,
+.business-error {
+  margin-bottom: 20px;
+  padding: 13px;
+  border-radius: 8px;
+}
+
+.business-success {
+  color: #17643d;
+  background: #dff5e8;
+}
+
+.business-error {
+  color: #9b1c1c;
+  background: #fde2e2;
+}
+
+.profile-preview {
+  padding: 25px;
+  background: var(--cream);
+  border-radius: 12px;
+}
+
+.profile-preview h3 {
+  color: var(--plum);
+  font-size: 1.7rem;
+}
+
+.profile-preview dl div {
+  margin-top: 15px;
+}
+
+.profile-preview dt {
+  font-weight: 700;
+}
+
+.profile-preview dd {
+  margin: 4px 0 0;
+}
+
+.business-loading {
+  display: grid;
+  min-height: 70vh;
+  place-items: center;
+}
+
+@media (max-width: 700px) {
+  .business-form-card {
+    padding: 25px 16px;
+  }
+
+  .business-form-header {
+    flex-direction: column;
+  }
+
+  .business-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-field {
+    grid-column: auto;
+  }
+
+  .step-progress small {
+    display: none;
+  }
+
+  .form-navigation {
+    flex-wrap: wrap;
+  }
+}
+.business-form-header h1 {
+  margin: 6px 0 12px;
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1.12;
+  letter-spacing: -1px;
+}
+
+.business-form-header p {
+  margin-top: 0;
+  line-height: 1.5;
+}
+
+.business-form-grid input,
+.business-form-grid select,
+.business-form-grid textarea {
+  color: var(--charcoal);
+  background-color: white;
+}
+
+.business-form-grid input::placeholder,
+.business-form-grid textarea::placeholder {
+  color: #81777c;
+  opacity: 1;
+}
