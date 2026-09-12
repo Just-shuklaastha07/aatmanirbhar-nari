@@ -10,6 +10,7 @@ import RoleSelection from "./pages/auth/RoleSelection";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -17,7 +18,14 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/explore" element={<ExploreBusiness />} />
-        <Route path="/start" element={<StartBusiness />} />
+        <Route
+          path="/start"
+          element={
+            <ProtectedRoute allowedRoles={["entrepreneur"]}>
+              <StartBusiness />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/learn" element={<Learn />} />
         <Route path="/about" element={<About />} />
 

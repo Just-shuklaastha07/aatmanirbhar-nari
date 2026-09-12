@@ -1,13 +1,28 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import "./Navbar.css";
 
 export default function Navbar() {
+  const navigate = useNavigate();
+
+  const {
+    user,
+    isAuthenticated,
+    logout,
+  } = useAuth();
+
   const [language, setLanguage] = useState("EN");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+    navigate("/");
   };
 
   return (
@@ -16,7 +31,6 @@ export default function Navbar() {
         <Link
           to="/"
           className="logo"
-          aria-label="Aatmanirbhar Nari home"
           onClick={closeMenu}
         >
           <span className="logo-mark" aria-hidden="true">
@@ -46,9 +60,17 @@ export default function Navbar() {
           Explore Businesses
         </NavLink>
 
-        <NavLink to="/start" onClick={closeMenu}>
-          Start Your Business
-        </NavLink>
+        {user?.role === "entrepreneur" && (
+          <NavLink to="/start" onClick={closeMenu}>
+            My Business
+          </NavLink>
+        )}
+
+        {!isAuthenticated && (
+          <NavLink to="/start" onClick={closeMenu}>
+            Start Your Business
+          </NavLink>
+        )}
 
         <NavLink to="/learn" onClick={closeMenu}>
           Learn
@@ -68,17 +90,39 @@ export default function Navbar() {
             <option value="HI">हिन्दी</option>
           </select>
 
-          <Link to="/login" className="login-btn" onClick={closeMenu}>
-            Login
-          </Link>
+          {isAuthenticated ? (
+            <>
+              <span className="navbar-user">
+                Hi, {user?.fullName?.split(" ")[0]}
+              </span>
 
-          <Link
-            to="/register/entrepreneur"
-            className="join-btn"
-            onClick={closeMenu}
-          >
-            Join as Entrepreneur
-          </Link>
+              <button
+                type="button"
+                className="logout-btn"
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="login-btn"
+                onClick={closeMenu}
+              >
+                Login
+              </Link>
+
+              <Link
+                to="/register/entrepreneur"
+                className="join-btn"
+                onClick={closeMenu}
+              >
+                Join as Entrepreneur
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </nav>

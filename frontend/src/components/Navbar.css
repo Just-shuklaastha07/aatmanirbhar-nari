@@ -172,3 +172,23 @@
     flex-direction: column;
   }
 }
+
+.navbar-user {
+  color: var(--cream);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.logout-btn {
+  padding: 8px 15px;
+  color: var(--plum) !important;
+  font-weight: 700;
+  background: var(--saffron) !important;
+  border: none;
+  border-radius: 6px;
+}
+
+.logout-btn:hover {
+  text-decoration: none !important;
+  background: #e99230 !important;
+}
