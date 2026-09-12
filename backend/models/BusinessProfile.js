@@ -22,7 +22,7 @@ const serviceSchema = new mongoose.Schema(
   },
   {
     _id: true,
-  }
+  },
 );
 
 const businessProfileSchema = new mongoose.Schema(
@@ -59,10 +59,7 @@ const businessProfileSchema = new mongoose.Schema(
       type: String,
       required: [true, "Business description is required"],
       trim: true,
-      maxlength: [
-        1000,
-        "Business description cannot exceed 1000 characters",
-      ],
+      maxlength: [1000, "Business description cannot exceed 1000 characters"],
     },
 
     experience: {
@@ -153,10 +150,7 @@ const businessProfileSchema = new mongoose.Schema(
     whatsappNumber: {
       type: String,
       trim: true,
-      match: [
-        /^$|^[6-9]\d{9}$/,
-        "Enter a valid 10-digit WhatsApp number",
-      ],
+      match: [/^$|^[6-9]\d{9}$/, "Enter a valid 10-digit WhatsApp number"],
       default: "",
     },
 
@@ -170,6 +164,7 @@ const businessProfileSchema = new mongoose.Schema(
       type: String,
       enum: ["draft", "pending", "approved", "rejected"],
       default: "draft",
+      index: true,
     },
 
     rejectionReason: {
@@ -196,10 +191,7 @@ const businessProfileSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-module.exports = mongoose.model(
-  "BusinessProfile",
-  businessProfileSchema
-);
+module.exports = mongoose.model("BusinessProfile", businessProfileSchema);
