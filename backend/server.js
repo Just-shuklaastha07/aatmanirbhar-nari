@@ -6,7 +6,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const businessRoutes = require("./routes/businessRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-
+const inquiryRoutes = require("./routes/inquiryRoutes");
 dotenv.config();
 
 const app = express();
@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/businesses", businessRoutes);
 app.use("/api/admin", adminRoutes);
-
+app.use("/api/inquiries", inquiryRoutes);
 app.use((req, res) => {
   res.status(404).json({
     success: false,
