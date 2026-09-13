@@ -5,6 +5,7 @@ const {
   getMyBusinessProfile,
   updateMyBusinessProfile,
   submitBusinessProfile,
+  getApprovedBusinesses,
 } = require("../controllers/businessController");
 
 const {
@@ -14,6 +15,10 @@ const {
 
 const router = express.Router();
 
+// Public route
+router.get("/", getApprovedBusinesses);
+
+// All routes below this line require an entrepreneur account
 router.use(protect);
 router.use(authorize("entrepreneur"));
 

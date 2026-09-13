@@ -235,9 +235,71 @@ const submitBusinessProfile = async (req, res) => {
   }
 };
 
+const escapeRegex = (value = "") => {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
+const getApprovedBusinesses = async (req, res) => {
+  try {
+    const {
+      search = "",
+      category = "",
+      city = "",
+    } = req.query;
+
+    const query = {
+      approvalStatus: "approved",
+    };
+
+    if (category.trim()) {
+      query.category = category.trim();
+    }
+
+    if (city.trim()) {
+      query.city = {
+        $regex: escapeRegex(city.trim()),
+        $options: "i",
+      };
+    }
+
+    if (search.trim()) {
+      const searchExpression = {
+        $regex: escapeRegex(search.trim()),
+        $options: "i",
+      };
+
+      query.$or = [
+        { businessName: searchExpression },
+        { description: searchExpression },
+        { category: searchExpression },
+        { city: searchExpression },
+        { locality: searchExpression },
+        { "services.name": searchExpression },
+      ];
+    }
+
+    const businesses = await BusinessProfile.find(query)
+      .populate("owner", "fullName")
+      .sort({ approvedAt: -1, createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: businesses.length,
+      businesses,
+    });
+  } catch (error) {
+    console.error("Get approved businesses error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to retrieve approved businesses.",
+    });
+  }
+};
 module.exports = {
   createBusinessProfile,
   getMyBusinessProfile,
   updateMyBusinessProfile,
   submitBusinessProfile,
+  getApprovedBusinesses,
 };
