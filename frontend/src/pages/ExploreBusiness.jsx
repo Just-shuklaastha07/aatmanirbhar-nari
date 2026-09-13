@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import InquiryForm from "../components/InquiryForm";
 import { getApprovedBusinesses } from "../services/exploreService";
 import "./ExploreBusiness.css";
 
@@ -14,14 +15,39 @@ const categories = [
   "Other",
 ];
 
+const getCategoryIcon = (category) => {
+  switch (category) {
+    case "Tiffin Services":
+      return "🍱";
+    case "Tailoring":
+      return "🧵";
+    case "Beauty Services":
+      return "💄";
+    case "Home Bakery":
+      return "🧁";
+    case "Tutoring":
+      return "📚";
+    default:
+      return "🎨";
+  }
+};
+
 export default function ExploreBusiness() {
   const [businesses, setBusinesses] = useState([]);
+
   const [filters, setFilters] = useState({
     search: "",
     category: "",
     city: "",
   });
-  const [activeFilters, setActiveFilters] = useState({});
+
+  const [activeFilters, setActiveFilters] = useState({
+    search: "",
+    category: "",
+    city: "",
+  });
+
+  const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -54,7 +80,7 @@ export default function ExploreBusiness() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setActiveFilters(filters);
+    setActiveFilters({ ...filters });
   };
 
   const clearFilters = () => {
@@ -75,10 +101,12 @@ export default function ExploreBusiness() {
       <main className="explore-page">
         <section className="explore-heading">
           <p>DISCOVER LOCAL TALENT</p>
+
           <h1>Explore Women-led Businesses</h1>
+
           <span>
-            Find trusted products and services offered by women
-            entrepreneurs near you.
+            Find trusted products and services offered by women entrepreneurs
+            near you.
           </span>
         </section>
 
@@ -156,17 +184,7 @@ export default function ExploreBusiness() {
                       />
                     ) : (
                       <span aria-hidden="true">
-                        {business.category === "Tiffin Services"
-                          ? "🍱"
-                          : business.category === "Tailoring"
-                            ? "🧵"
-                            : business.category === "Beauty Services"
-                              ? "💄"
-                              : business.category === "Home Bakery"
-                                ? "🧁"
-                                : business.category === "Tutoring"
-                                  ? "📚"
-                                  : "🎨"}
+                        {getCategoryIcon(business.category)}
                       </span>
                     )}
                   </div>
@@ -179,7 +197,9 @@ export default function ExploreBusiness() {
                     <h2>{business.businessName}</h2>
 
                     <p className="owner-name">
-                      By {business.owner?.fullName || "Local entrepreneur"}
+                      By{" "}
+                      {business.owner?.fullName ||
+                        "Local entrepreneur"}
                     </p>
 
                     <p className="card-description">
@@ -199,14 +219,34 @@ export default function ExploreBusiness() {
 
                     <h3>Services</h3>
 
-                    <ul className="card-services">
-                      {business.services?.slice(0, 3).map((service) => (
-                        <li key={service._id}>
-                          <span>{service.name}</span>
-                          <strong>From ₹{service.startingPrice}</strong>
-                        </li>
-                      ))}
-                    </ul>
+                    {business.services?.length > 0 ? (
+                      <ul className="card-services">
+                        {business.services
+                          .slice(0, 3)
+                          .map((service) => (
+                            <li key={service._id}>
+                              <span>{service.name}</span>
+
+                              <strong>
+                                From ₹{service.startingPrice}
+                              </strong>
+                            </li>
+                          ))}
+                      </ul>
+                    ) : (
+                      <p>No services listed.</p>
+                    )}
+
+                    {/* Add the Send Inquiry button here */}
+                    <button
+                      type="button"
+                      className="inquiry-button"
+                      onClick={() =>
+                        setSelectedBusiness(business)
+                      }
+                    >
+                      Send Inquiry
+                    </button>
 
                     {business.whatsappNumber ? (
                       <a
@@ -233,6 +273,15 @@ export default function ExploreBusiness() {
           </>
         )}
       </main>
+
+      {/* Inquiry popup */}
+      {selectedBusiness && (
+        <InquiryForm
+          businessId={selectedBusiness._id}
+          businessName={selectedBusiness.businessName}
+          onClose={() => setSelectedBusiness(null)}
+        />
+      )}
 
       <Footer />
     </>

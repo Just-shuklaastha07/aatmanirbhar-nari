@@ -235,3 +235,24 @@
     flex-direction: column;
   }
 }
+
+.inquiry-button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  color: white;
+  background-color: var(--plum);
+  border: none;
+  border-radius: 7px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.inquiry-button:hover {
+  background-color: var(--green);
+}
+
+.inquiry-button + .contact-button {
+  margin-top: 10px;
+}

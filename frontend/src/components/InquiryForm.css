@@ -1,0 +1,106 @@
+.inquiry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(41, 37, 42, 0.65);
+}
+
+.inquiry-modal {
+  position: relative;
+  width: min(100%, 540px);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+  color: var(--charcoal);
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.inquiry-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  padding: 4px 10px;
+  color: var(--charcoal);
+  background: transparent;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.inquiry-label {
+  margin: 0 0 6px;
+  color: var(--green);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.inquiry-modal h2 {
+  margin: 0 0 24px;
+  padding-right: 30px;
+  color: var(--plum);
+}
+
+.inquiry-modal form {
+  display: grid;
+  gap: 10px;
+}
+
+.inquiry-modal label {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+.inquiry-modal input,
+.inquiry-modal textarea {
+  width: 100%;
+  padding: 12px;
+  color: var(--charcoal);
+  background: white;
+  border: 1px solid #d7c3cc;
+  border-radius: 7px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.inquiry-modal textarea {
+  resize: vertical;
+}
+
+.send-inquiry-button {
+  margin-top: 14px;
+  padding: 13px;
+  color: white;
+  background: var(--plum);
+  border: none;
+  border-radius: 7px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.send-inquiry-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.inquiry-error,
+.inquiry-success {
+  margin-bottom: 14px;
+  padding: 12px;
+  border-radius: 7px;
+  text-align: center;
+}
+
+.inquiry-error {
+  color: #a01818;
+  background: #ffe5e5;
+}
+
+.inquiry-success {
+  color: #08643e;
+  background: #dff5e9;
+}
