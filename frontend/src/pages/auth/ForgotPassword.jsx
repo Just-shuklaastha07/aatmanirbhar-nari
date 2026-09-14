@@ -2,9 +2,12 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useLanguage } from "../../context/LanguageContext";
 import "./Auth.css";
 
 export default function ForgotPassword() {
+  const { t } = useLanguage();
+
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -15,21 +18,19 @@ export default function ForgotPassword() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!email.trim()) {
-      setError("Email address is required.");
+      setError(t("auth.validation.emailRequired"));
       setMessage("");
       return;
     }
 
-    if (!emailPattern.test(email)) {
-      setError("Enter a valid email address.");
+    if (!emailPattern.test(email.trim())) {
+      setError(t("auth.validation.invalidEmail"));
       setMessage("");
       return;
     }
 
     setError("");
-    setMessage(
-      "Password reset request submitted. Email functionality will be connected later."
-    );
+    setMessage(t("auth.forgot.success"));
   };
 
   return (
@@ -38,11 +39,14 @@ export default function ForgotPassword() {
 
       <main className="auth-page">
         <section className="auth-card auth-card-small">
-          <p className="auth-label">Account recovery</p>
-          <h1>Forgot your password?</h1>
+          <p className="auth-label">
+            {t("auth.forgot.label")}
+          </p>
+
+          <h1>{t("auth.forgot.title")}</h1>
 
           <p className="auth-subtitle">
-            Enter your registered email address to request a reset link.
+            {t("auth.forgot.subtitle")}
           </p>
 
           {message && (
@@ -51,9 +55,15 @@ export default function ForgotPassword() {
             </div>
           )}
 
-          <form className="auth-form single-column" onSubmit={handleSubmit}>
+          <form
+            className="auth-form single-column"
+            onSubmit={handleSubmit}
+          >
             <div className="form-group">
-              <label htmlFor="resetEmail">Email address</label>
+              <label htmlFor="resetEmail">
+                {t("auth.forgot.email")}
+              </label>
+
               <input
                 id="resetEmail"
                 type="email"
@@ -61,20 +71,29 @@ export default function ForgotPassword() {
                 onChange={(event) => {
                   setEmail(event.target.value);
                   setError("");
+                  setMessage("");
                 }}
-                placeholder="name@example.com"
+                placeholder={t("auth.common.emailPlaceholder")}
               />
 
-              {error && <span className="form-error">{error}</span>}
+              {error && (
+                <span className="form-error">{error}</span>
+              )}
             </div>
 
-            <button type="submit" className="auth-submit-button">
-              Send Reset Link
+            <button
+              type="submit"
+              className="auth-submit-button"
+            >
+              {t("auth.forgot.submit")}
             </button>
           </form>
 
           <p className="auth-switch">
-            Remembered your password? <Link to="/login">Back to login</Link>
+            {t("auth.forgot.remembered")}{" "}
+            <Link to="/login">
+              {t("auth.forgot.back")}
+            </Link>
           </p>
         </section>
       </main>

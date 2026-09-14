@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 import "./Auth.css";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useLanguage();
 
   const [form, setForm] = useState({
     email: "",
@@ -45,17 +46,19 @@ export default function Login() {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!form.email.trim()) {
-      newErrors.email = "Email address is required.";
+      newErrors.email = t("auth.validation.emailRequired");
     } else if (!emailPattern.test(form.email.trim())) {
-      newErrors.email = "Enter a valid email address.";
+      newErrors.email = t("auth.validation.invalidEmail");
     }
 
     if (!form.password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = t(
+        "auth.validation.passwordRequired"
+      );
     }
 
     if (!form.role) {
-      newErrors.role = "Please select your role.";
+      newErrors.role = t("auth.validation.roleRequired");
     }
 
     return newErrors;
@@ -83,7 +86,7 @@ export default function Login() {
         role: form.role,
       });
 
-      setSuccessMessage("Logged in successfully!");
+      setSuccessMessage(t("auth.login.success"));
 
       setTimeout(() => {
         if (data.user.role === "entrepreneur") {
@@ -96,8 +99,7 @@ export default function Login() {
       }, 800);
     } catch (error) {
       setApiError(
-        error.message ||
-          "Unable to log in. Please check your details."
+        error.message || t("auth.validation.loginFailed")
       );
     } finally {
       setLoading(false);
@@ -110,12 +112,14 @@ export default function Login() {
 
       <main className="auth-page">
         <section className="auth-card auth-card-small">
-          <p className="auth-label">Welcome back</p>
+          <p className="auth-label">
+            {t("auth.login.label")}
+          </p>
 
-          <h1>Log in to your account</h1>
+          <h1>{t("auth.login.title")}</h1>
 
           <p className="auth-subtitle">
-            Continue managing or discovering local businesses.
+            {t("auth.login.subtitle")}
           </p>
 
           {successMessage && (
@@ -136,7 +140,9 @@ export default function Login() {
             noValidate
           >
             <div className="form-group">
-              <label htmlFor="loginRole">Login as</label>
+              <label htmlFor="loginRole">
+                {t("auth.login.loginAs")}
+              </label>
 
               <select
                 id="loginRole"
@@ -144,11 +150,17 @@ export default function Login() {
                 value={form.role}
                 onChange={handleChange}
               >
-                <option value="customer">Customer</option>
-                <option value="entrepreneur">
-                  Entrepreneur
+                <option value="customer">
+                  {t("auth.login.customer")}
                 </option>
-                <option value="admin">Administrator</option>
+
+                <option value="entrepreneur">
+                  {t("auth.login.entrepreneur")}
+                </option>
+
+                <option value="admin">
+                  {t("auth.login.administrator")}
+                </option>
               </select>
 
               {errors.role && (
@@ -160,7 +172,7 @@ export default function Login() {
 
             <div className="form-group">
               <label htmlFor="loginEmail">
-                Email address
+                {t("auth.login.email")}
               </label>
 
               <input
@@ -169,7 +181,7 @@ export default function Login() {
                 name="email"
                 value={form.email}
                 onChange={handleChange}
-                placeholder="name@example.com"
+                placeholder={t("auth.common.emailPlaceholder")}
                 autoComplete="email"
               />
 
@@ -181,7 +193,9 @@ export default function Login() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="loginPassword">Password</label>
+              <label htmlFor="loginPassword">
+                {t("auth.login.password")}
+              </label>
 
               <div className="password-field">
                 <input
@@ -190,7 +204,9 @@ export default function Login() {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
-                  placeholder="Enter your password"
+                  placeholder={t(
+                    "auth.login.passwordPlaceholder"
+                  )}
                   autoComplete="current-password"
                 />
 
@@ -201,11 +217,13 @@ export default function Login() {
                   }
                   aria-label={
                     showPassword
-                      ? "Hide password"
-                      : "Show password"
+                      ? t("auth.login.hide")
+                      : t("auth.login.show")
                   }
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword
+                    ? t("auth.login.hide")
+                    : t("auth.login.show")}
                 </button>
               </div>
 
@@ -225,11 +243,11 @@ export default function Login() {
                   onChange={handleChange}
                 />
 
-                <span>Remember me</span>
+                <span>{t("auth.login.remember")}</span>
               </label>
 
               <Link to="/forgot-password">
-                Forgot password?
+                {t("auth.login.forgot")}
               </Link>
             </div>
 
@@ -238,13 +256,17 @@ export default function Login() {
               className="auth-submit-button"
               disabled={loading}
             >
-              {loading ? "Logging In..." : "Log In"}
+              {loading
+                ? t("auth.login.submitting")
+                : t("auth.login.submit")}
             </button>
           </form>
 
           <p className="auth-switch">
-            Don’t have an account?{" "}
-            <Link to="/select-role">Create account</Link>
+            {t("auth.login.noAccount")}{" "}
+            <Link to="/select-role">
+              {t("auth.login.createAccount")}
+            </Link>
           </p>
         </section>
       </main>

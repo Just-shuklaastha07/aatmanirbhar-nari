@@ -9,6 +9,7 @@ import {
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { useAuth } from "../../context/AuthContext";
+import { useLanguage } from "../../context/LanguageContext";
 import "./Auth.css";
 
 const initialForm = {
@@ -26,13 +27,13 @@ export default function Register() {
   const { role } = useParams();
   const navigate = useNavigate();
   const { register } = useAuth();
+  const { t } = useLanguage();
 
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState(false);
@@ -42,9 +43,6 @@ export default function Register() {
   if (!validRoles.includes(role)) {
     return <Navigate to="/select-role" replace />;
   }
-
-  const roleName =
-    role === "entrepreneur" ? "Entrepreneur" : "Customer";
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target;
@@ -65,51 +63,59 @@ export default function Register() {
 
   const validateForm = () => {
     const newErrors = {};
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const mobilePattern = /^[6-9]\d{9}$/;
 
     if (!form.fullName.trim()) {
-      newErrors.fullName = "Full name is required.";
+      newErrors.fullName = t(
+        "auth.register.fullNameRequired"
+      );
     } else if (form.fullName.trim().length < 3) {
-      newErrors.fullName =
-        "Full name must contain at least 3 characters.";
+      newErrors.fullName = t(
+        "auth.register.fullNameLength"
+      );
     }
 
     if (!form.email.trim()) {
-      newErrors.email = "Email address is required.";
+      newErrors.email = t("auth.register.emailRequired");
     } else if (!emailPattern.test(form.email.trim())) {
-      newErrors.email = "Enter a valid email address.";
+      newErrors.email = t("auth.register.invalidEmail");
     }
 
     if (!form.mobile.trim()) {
-      newErrors.mobile = "Mobile number is required.";
+      newErrors.mobile = t("auth.register.mobileRequired");
     } else if (!mobilePattern.test(form.mobile.trim())) {
-      newErrors.mobile =
-        "Enter a valid 10-digit Indian mobile number.";
+      newErrors.mobile = t("auth.register.invalidMobile");
     }
 
     if (!form.city.trim()) {
-      newErrors.city = "City is required.";
+      newErrors.city = t("auth.register.cityRequired");
     }
 
     if (!form.password) {
-      newErrors.password = "Password is required.";
+      newErrors.password = t(
+        "auth.register.passwordRequired"
+      );
     } else if (form.password.length < 8) {
-      newErrors.password =
-        "Password must contain at least 8 characters.";
+      newErrors.password = t(
+        "auth.register.passwordLength"
+      );
     }
 
     if (!form.confirmPassword) {
-      newErrors.confirmPassword =
-        "Please confirm your password.";
+      newErrors.confirmPassword = t(
+        "auth.register.confirmRequired"
+      );
     } else if (form.password !== form.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
+      newErrors.confirmPassword = t(
+        "auth.register.passwordMismatch"
+      );
     }
 
     if (!form.termsAccepted) {
-      newErrors.termsAccepted =
-        "You must accept the terms and privacy policy.";
+      newErrors.termsAccepted = t(
+        "auth.register.termsRequired"
+      );
     }
 
     return newErrors;
@@ -141,24 +147,29 @@ export default function Register() {
         role,
       });
 
-      setSuccessMessage("Account created successfully!");
+      setSuccessMessage(t("auth.register.success"));
 
       setTimeout(() => {
-        if (role === "entrepreneur") {
-          navigate("/start");
-        } else {
-          navigate("/explore");
-        }
+        navigate(role === "entrepreneur" ? "/start" : "/explore");
       }, 1000);
     } catch (error) {
       setApiError(
-        error.message ||
-          "Unable to create your account. Please try again."
+        error.message || t("auth.register.failed")
       );
     } finally {
       setLoading(false);
     }
   };
+
+  const pageTitle =
+    role === "entrepreneur"
+      ? t("auth.register.entrepreneurTitle")
+      : t("auth.register.customerTitle");
+
+  const submitText =
+    role === "entrepreneur"
+      ? t("auth.register.createEntrepreneur")
+      : t("auth.register.createCustomer");
 
   return (
     <>
@@ -166,12 +177,14 @@ export default function Register() {
 
       <main className="auth-page">
         <section className="auth-card">
-          <p className="auth-label">Create your account</p>
+          <p className="auth-label">
+            {t("auth.register.label")}
+          </p>
 
-          <h1>Register as {roleName}</h1>
+          <h1>{pageTitle}</h1>
 
           <p className="auth-subtitle">
-            Enter your details to begin your journey.
+            {t("auth.register.subtitle")}
           </p>
 
           {successMessage && (
@@ -192,7 +205,9 @@ export default function Register() {
             noValidate
           >
             <div className="form-group full-width">
-              <label htmlFor="fullName">Full name</label>
+              <label htmlFor="fullName">
+                {t("auth.register.fullName")}
+              </label>
 
               <input
                 id="fullName"
@@ -200,7 +215,9 @@ export default function Register() {
                 name="fullName"
                 value={form.fullName}
                 onChange={handleChange}
-                placeholder="Enter your full name"
+                placeholder={t(
+                  "auth.register.fullNamePlaceholder"
+                )}
                 autoComplete="name"
               />
 
@@ -213,7 +230,7 @@ export default function Register() {
 
             <div className="form-group">
               <label htmlFor="registerEmail">
-                Email address
+                {t("auth.register.email")}
               </label>
 
               <input
@@ -234,7 +251,9 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="mobile">Mobile number</label>
+              <label htmlFor="mobile">
+                {t("auth.register.mobile")}
+              </label>
 
               <input
                 id="mobile"
@@ -242,7 +261,9 @@ export default function Register() {
                 name="mobile"
                 value={form.mobile}
                 onChange={handleChange}
-                placeholder="10-digit mobile number"
+                placeholder={t(
+                  "auth.register.mobilePlaceholder"
+                )}
                 maxLength="10"
                 inputMode="numeric"
                 autoComplete="tel"
@@ -256,7 +277,9 @@ export default function Register() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="city">City</label>
+              <label htmlFor="city">
+                {t("auth.register.city")}
+              </label>
 
               <input
                 id="city"
@@ -264,7 +287,9 @@ export default function Register() {
                 name="city"
                 value={form.city}
                 onChange={handleChange}
-                placeholder="Enter your city"
+                placeholder={t(
+                  "auth.register.cityPlaceholder"
+                )}
                 autoComplete="address-level2"
               />
 
@@ -277,7 +302,7 @@ export default function Register() {
 
             <div className="form-group">
               <label htmlFor="language">
-                Preferred language
+                {t("auth.register.preferredLanguage")}
               </label>
 
               <select
@@ -286,14 +311,19 @@ export default function Register() {
                 value={form.language}
                 onChange={handleChange}
               >
-                <option value="English">English</option>
-                <option value="Hindi">हिन्दी</option>
+                <option value="English">
+                  {t("auth.register.english")}
+                </option>
+
+                <option value="Hindi">
+                  {t("auth.register.hindi")}
+                </option>
               </select>
             </div>
 
             <div className="form-group">
               <label htmlFor="registerPassword">
-                Password
+                {t("auth.register.password")}
               </label>
 
               <div className="password-field">
@@ -303,7 +333,9 @@ export default function Register() {
                   name="password"
                   value={form.password}
                   onChange={handleChange}
-                  placeholder="Minimum 8 characters"
+                  placeholder={t(
+                    "auth.register.passwordPlaceholder"
+                  )}
                   autoComplete="new-password"
                 />
 
@@ -314,11 +346,13 @@ export default function Register() {
                   }
                   aria-label={
                     showPassword
-                      ? "Hide password"
-                      : "Show password"
+                      ? t("auth.register.hide")
+                      : t("auth.register.show")
                   }
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword
+                    ? t("auth.register.hide")
+                    : t("auth.register.show")}
                 </button>
               </div>
 
@@ -331,7 +365,7 @@ export default function Register() {
 
             <div className="form-group">
               <label htmlFor="confirmPassword">
-                Confirm password
+                {t("auth.register.confirmPassword")}
               </label>
 
               <div className="password-field">
@@ -343,7 +377,9 @@ export default function Register() {
                   name="confirmPassword"
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Enter password again"
+                  placeholder={t(
+                    "auth.register.confirmPasswordPlaceholder"
+                  )}
                   autoComplete="new-password"
                 />
 
@@ -356,11 +392,13 @@ export default function Register() {
                   }
                   aria-label={
                     showConfirmPassword
-                      ? "Hide confirmation password"
-                      : "Show confirmation password"
+                      ? t("auth.register.hide")
+                      : t("auth.register.show")
                   }
                 >
-                  {showConfirmPassword ? "Hide" : "Show"}
+                  {showConfirmPassword
+                    ? t("auth.register.hide")
+                    : t("auth.register.show")}
                 </button>
               </div>
 
@@ -380,9 +418,7 @@ export default function Register() {
                   onChange={handleChange}
                 />
 
-                <span>
-                  I agree to the terms and privacy policy.
-                </span>
+                <span>{t("auth.register.agree")}</span>
               </label>
 
               {errors.termsAccepted && (
@@ -398,19 +434,23 @@ export default function Register() {
               disabled={loading}
             >
               {loading
-                ? "Creating Account..."
-                : `Create ${roleName} Account`}
+                ? t("auth.register.creating")
+                : submitText}
             </button>
           </form>
 
           <p className="auth-switch">
-            Already have an account?{" "}
-            <Link to="/login">Log in</Link>
+            {t("auth.register.alreadyAccount")}{" "}
+            <Link to="/login">
+              {t("auth.register.login")}
+            </Link>
           </p>
 
           <p className="auth-switch">
-            Selected the wrong role?{" "}
-            <Link to="/select-role">Change role</Link>
+            {t("auth.register.wrongRole")}{" "}
+            <Link to="/select-role">
+              {t("auth.register.changeRole")}
+            </Link>
           </p>
         </section>
       </main>

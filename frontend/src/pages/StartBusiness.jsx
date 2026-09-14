@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 import {
   createBusinessProfile,
@@ -20,6 +21,16 @@ const days = [
   "Friday",
   "Saturday",
   "Sunday",
+];
+
+const categories = [
+  "Tiffin Services",
+  "Tailoring",
+  "Beauty Services",
+  "Handicrafts",
+  "Home Bakery",
+  "Tutoring",
+  "Other",
 ];
 
 const initialForm = {
@@ -44,8 +55,233 @@ const initialForm = {
   whatsappNumber: "",
 };
 
+const translations = {
+  EN: {
+    loading: "Loading your business profile...",
+    onboarding: "Entrepreneur onboarding",
+    title: "Create Your Business Profile",
+    subtitle:
+      "Add your business details so customers can discover your services.",
+    profileComplete: "Profile complete",
+
+    status: {
+      draft: "Draft",
+      pending: "Pending",
+      approved: "Approved",
+      rejected: "Rejected",
+    },
+
+    steps: [
+      "Business",
+      "Location",
+      "Services",
+      "Availability",
+      "Preview",
+    ],
+
+    businessDetails: "Business Details",
+    businessName: "Business name",
+    businessNamePlaceholder: "Example: Anita's Tiffin Service",
+    businessCategory: "Business category",
+    selectCategory: "Select category",
+    experience: "Experience in years",
+    businessDescription: "Business description",
+    businessDescriptionPlaceholder:
+      "Describe your business and what makes it special",
+
+    businessLocation: "Business Location",
+    address: "Address",
+    locality: "Locality",
+    city: "City",
+    pinCode: "PIN code",
+    serviceAreas: "Service areas",
+    serviceAreasPlaceholder: "Ghaziabad, Noida, Delhi",
+
+    servicesPricing: "Services and Pricing",
+    serviceName: "Service name",
+    startingPrice: "Starting price",
+    serviceDescription: "Service description",
+    minimumPrice: "Minimum price",
+    maximumPrice: "Maximum price",
+
+    availability: "Availability",
+    workingDays: "Working days",
+    openingTime: "Opening time",
+    closingTime: "Closing time",
+    whatsappNumber: "WhatsApp number",
+    homeDeliveryAvailable: "Home delivery available",
+
+    previewProfile: "Preview Your Profile",
+    businessNameFallback: "Business name",
+    location: "Location",
+    service: "Service",
+    homeDelivery: "Home delivery",
+    yes: "Yes",
+    no: "No",
+
+    back: "Back",
+    saveDraft: "Save Draft",
+    saving: "Saving...",
+    next: "Next",
+    awaitingApproval: "Awaiting Approval",
+    submitApproval: "Submit for Approval",
+
+    savedMessage: "Business profile saved as draft.",
+    submittedMessage:
+      "Profile submitted successfully for admin approval.",
+
+    errors: {
+      business:
+        "Complete all required business details.",
+      location:
+        "Enter a locality, city and valid 6-digit PIN code.",
+      locationShort:
+        "Complete the location information.",
+      service:
+        "Enter at least one service and its starting price.",
+      serviceShort:
+        "Add at least one service and starting price.",
+      price:
+        "Maximum price must be greater than or equal to minimum price.",
+      availability:
+        "Select working days and business timings.",
+      availabilityShort:
+        "Complete your availability information.",
+      whatsapp:
+        "Enter a valid 10-digit WhatsApp number.",
+    },
+  },
+
+  HI: {
+    loading: "आपकी व्यवसाय प्रोफ़ाइल लोड हो रही है...",
+    onboarding: "उद्यमी पंजीकरण",
+    title: "अपनी व्यवसाय प्रोफ़ाइल बनाएं",
+    subtitle:
+      "अपने व्यवसाय की जानकारी जोड़ें ताकि ग्राहक आपकी सेवाएं खोज सकें।",
+    profileComplete: "प्रोफ़ाइल पूर्ण",
+
+    status: {
+      draft: "ड्राफ्ट",
+      pending: "लंबित",
+      approved: "स्वीकृत",
+      rejected: "अस्वीकृत",
+    },
+
+    steps: [
+      "व्यवसाय",
+      "स्थान",
+      "सेवाएं",
+      "उपलब्धता",
+      "पूर्वावलोकन",
+    ],
+
+    businessDetails: "व्यवसाय की जानकारी",
+    businessName: "व्यवसाय का नाम",
+    businessNamePlaceholder: "उदाहरण: अनीता टिफिन सर्विस",
+    businessCategory: "व्यवसाय की श्रेणी",
+    selectCategory: "श्रेणी चुनें",
+    experience: "वर्षों का अनुभव",
+    businessDescription: "व्यवसाय का विवरण",
+    businessDescriptionPlaceholder:
+      "अपने व्यवसाय और उसकी विशेषताओं का वर्णन करें",
+
+    businessLocation: "व्यवसाय का स्थान",
+    address: "पता",
+    locality: "इलाका",
+    city: "शहर",
+    pinCode: "पिन कोड",
+    serviceAreas: "सेवा क्षेत्र",
+    serviceAreasPlaceholder: "गाजियाबाद, नोएडा, दिल्ली",
+
+    servicesPricing: "सेवाएं और मूल्य",
+    serviceName: "सेवा का नाम",
+    startingPrice: "शुरुआती मूल्य",
+    serviceDescription: "सेवा का विवरण",
+    minimumPrice: "न्यूनतम मूल्य",
+    maximumPrice: "अधिकतम मूल्य",
+
+    availability: "उपलब्धता",
+    workingDays: "कार्य दिवस",
+    openingTime: "खुलने का समय",
+    closingTime: "बंद होने का समय",
+    whatsappNumber: "व्हाट्सऐप नंबर",
+    homeDeliveryAvailable: "होम डिलीवरी उपलब्ध है",
+
+    previewProfile: "अपनी प्रोफ़ाइल का पूर्वावलोकन करें",
+    businessNameFallback: "व्यवसाय का नाम",
+    location: "स्थान",
+    service: "सेवा",
+    homeDelivery: "होम डिलीवरी",
+    yes: "हाँ",
+    no: "नहीं",
+
+    back: "पीछे",
+    saveDraft: "ड्राफ्ट सहेजें",
+    saving: "सहेजा जा रहा है...",
+    next: "आगे",
+    awaitingApproval: "स्वीकृति की प्रतीक्षा",
+    submitApproval: "स्वीकृति के लिए भेजें",
+
+    savedMessage: "व्यवसाय प्रोफ़ाइल ड्राफ्ट के रूप में सहेजी गई।",
+    submittedMessage:
+      "प्रोफ़ाइल सफलतापूर्वक एडमिन की स्वीकृति के लिए भेजी गई।",
+
+    errors: {
+      business:
+        "व्यवसाय की सभी आवश्यक जानकारी पूरी करें।",
+      location:
+        "इलाका, शहर और मान्य 6 अंकों का पिन कोड दर्ज करें।",
+      locationShort:
+        "स्थान की पूरी जानकारी दर्ज करें।",
+      service:
+        "कम से कम एक सेवा और उसका शुरुआती मूल्य दर्ज करें।",
+      serviceShort:
+        "कम से कम एक सेवा और शुरुआती मूल्य जोड़ें।",
+      price:
+        "अधिकतम मूल्य न्यूनतम मूल्य के बराबर या उससे अधिक होना चाहिए।",
+      availability:
+        "कार्य दिवस और व्यवसाय का समय चुनें।",
+      availabilityShort:
+        "उपलब्धता की पूरी जानकारी दर्ज करें।",
+      whatsapp:
+        "मान्य 10 अंकों का व्हाट्सऐप नंबर दर्ज करें।",
+    },
+  },
+};
+
+const dayTranslations = {
+  Monday: "सोमवार",
+  Tuesday: "मंगलवार",
+  Wednesday: "बुधवार",
+  Thursday: "गुरुवार",
+  Friday: "शुक्रवार",
+  Saturday: "शनिवार",
+  Sunday: "रविवार",
+};
+
+const categoryTranslations = {
+  "Tiffin Services": "टिफिन सेवाएं",
+  Tailoring: "सिलाई",
+  "Beauty Services": "सौंदर्य सेवाएं",
+  Handicrafts: "हस्तशिल्प",
+  "Home Bakery": "होम बेकरी",
+  Tutoring: "शिक्षण",
+  Other: "अन्य",
+};
+
 export default function StartBusiness() {
   const { token } = useAuth();
+  const { language } = useLanguage();
+
+  const text = translations[language] || translations.EN;
+
+  const displayDay = (day) =>
+    language === "HI" ? dayTranslations[day] || day : day;
+
+  const displayCategory = (category) =>
+    language === "HI"
+      ? categoryTranslations[category] || category
+      : category;
 
   const [form, setForm] = useState(initialForm);
   const [step, setStep] = useState(1);
@@ -54,7 +290,7 @@ export default function StartBusiness() {
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState("");
+  const [messageKey, setMessageKey] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -101,6 +337,8 @@ export default function StartBusiness() {
 
     if (token) {
       loadProfile();
+    } else {
+      setLoading(false);
     }
   }, [token]);
 
@@ -113,7 +351,7 @@ export default function StartBusiness() {
     }));
 
     setError("");
-    setMessage("");
+    setMessageKey("");
   };
 
   const handleDayChange = (day) => {
@@ -123,68 +361,68 @@ export default function StartBusiness() {
         ? previous.workingDays.filter((item) => item !== day)
         : [...previous.workingDays, day],
     }));
+
+    setError("");
+    setMessageKey("");
   };
 
-  const validateCurrentStep = () => {
-    if (step === 1) {
-      if (
-        !form.businessName.trim() ||
+  const validateStep = (stepNumber) => {
+    if (
+      stepNumber === 1 &&
+      (!form.businessName.trim() ||
         !form.category ||
-        !form.description.trim()
-      ) {
-        return "Complete all required business details.";
-      }
+        !form.description.trim())
+    ) {
+      return text.errors.business;
     }
 
-    if (step === 2) {
-      if (
-        !form.locality.trim() ||
+    if (
+      stepNumber === 2 &&
+      (!form.locality.trim() ||
         !form.city.trim() ||
-        !/^[1-9][0-9]{5}$/.test(form.pinCode)
-      ) {
-        return "Enter a locality, city and valid 6-digit PIN code.";
-      }
+        !/^[1-9][0-9]{5}$/.test(form.pinCode.trim()))
+    ) {
+      return text.errors.location;
     }
 
-    if (step === 3) {
-      if (
-        !form.serviceName.trim() ||
-        form.startingPrice === ""
-      ) {
-        return "Enter at least one service and its starting price.";
-      }
-
-      if (
-        Number(form.maximumPrice) > 0 &&
-        Number(form.minimumPrice) >
-          Number(form.maximumPrice)
-      ) {
-        return "Maximum price must be greater than minimum price.";
-      }
+    if (
+      stepNumber === 3 &&
+      (!form.serviceName.trim() ||
+        form.startingPrice === "")
+    ) {
+      return text.errors.service;
     }
 
-    if (step === 4) {
-      if (
-        form.workingDays.length === 0 ||
+    if (
+      stepNumber === 3 &&
+      Number(form.maximumPrice) > 0 &&
+      Number(form.minimumPrice) > Number(form.maximumPrice)
+    ) {
+      return text.errors.price;
+    }
+
+    if (
+      stepNumber === 4 &&
+      (form.workingDays.length === 0 ||
         !form.openingTime ||
-        !form.closingTime
-      ) {
-        return "Select working days and business timings.";
-      }
+        !form.closingTime)
+    ) {
+      return text.errors.availability;
+    }
 
-      if (
-        form.whatsappNumber &&
-        !/^[6-9]\d{9}$/.test(form.whatsappNumber)
-      ) {
-        return "Enter a valid 10-digit WhatsApp number.";
-      }
+    if (
+      stepNumber === 4 &&
+      form.whatsappNumber &&
+      !/^[6-9]\d{9}$/.test(form.whatsappNumber.trim())
+    ) {
+      return text.errors.whatsapp;
     }
 
     return "";
   };
 
   const nextStep = () => {
-    const validationError = validateCurrentStep();
+    const validationError = validateStep(step);
 
     if (validationError) {
       setError(validationError);
@@ -192,12 +430,14 @@ export default function StartBusiness() {
     }
 
     setError("");
+    setMessageKey("");
     setStep((previous) => Math.min(previous + 1, 5));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const previousStep = () => {
     setError("");
+    setMessageKey("");
     setStep((previous) => Math.max(previous - 1, 1));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -240,7 +480,7 @@ export default function StartBusiness() {
     try {
       setSaving(true);
       setError("");
-      setMessage("");
+      setMessageKey("");
 
       const profileData = prepareProfileData();
 
@@ -251,7 +491,7 @@ export default function StartBusiness() {
       setProfileExists(true);
       setApprovalStatus(data.profile.approvalStatus);
       setProfileCompletion(data.profile.profileCompletion);
-      setMessage("Business profile saved as draft.");
+      setMessageKey("saved");
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -260,21 +500,21 @@ export default function StartBusiness() {
   };
 
   const submitProfile = async () => {
-    try {
-      for (let currentStep = 1; currentStep <= 4; currentStep++) {
+    for (let currentStep = 1; currentStep <= 4; currentStep++) {
+      const validationError = validateStep(currentStep);
+
+      if (validationError) {
         setStep(currentStep);
-
-        const validationError = validateStep(currentStep);
-
-        if (validationError) {
-          setError(validationError);
-          return;
-        }
+        setError(validationError);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
+    }
 
+    try {
       setSaving(true);
       setError("");
-      setMessage("");
+      setMessageKey("");
 
       const profileData = prepareProfileData();
 
@@ -289,8 +529,10 @@ export default function StartBusiness() {
 
       setApprovalStatus(data.profile.approvalStatus);
       setProfileCompletion(data.profile.profileCompletion);
-      setMessage("Profile submitted successfully for admin approval.");
+      setMessageKey("submitted");
       setStep(5);
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -298,51 +540,13 @@ export default function StartBusiness() {
     }
   };
 
-  const validateStep = (stepNumber) => {
-    if (
-      stepNumber === 1 &&
-      (!form.businessName.trim() ||
-        !form.category ||
-        !form.description.trim())
-    ) {
-      return "Complete all required business details.";
-    }
-
-    if (
-      stepNumber === 2 &&
-      (!form.locality.trim() ||
-        !form.city.trim() ||
-        !/^[1-9][0-9]{5}$/.test(form.pinCode))
-    ) {
-      return "Complete the location information.";
-    }
-
-    if (
-      stepNumber === 3 &&
-      (!form.serviceName.trim() ||
-        form.startingPrice === "")
-    ) {
-      return "Add at least one service and starting price.";
-    }
-
-    if (
-      stepNumber === 4 &&
-      (form.workingDays.length === 0 ||
-        !form.openingTime ||
-        !form.closingTime)
-    ) {
-      return "Complete your availability information.";
-    }
-
-    return "";
-  };
-
   if (loading) {
     return (
       <>
         <Navbar />
+
         <main className="business-loading">
-          Loading your business profile...
+          {text.loading}
         </main>
       </>
     );
@@ -357,23 +561,22 @@ export default function StartBusiness() {
           <div className="business-form-header">
             <div>
               <p className="business-label">
-                Entrepreneur onboarding
+                {text.onboarding}
               </p>
 
-              <h1>Create Your Business Profile</h1>
+              <h1>{text.title}</h1>
 
-              <p>
-                Add your business details so customers can discover
-                your services.
-              </p>
+              <p>{text.subtitle}</p>
             </div>
 
             <div className="profile-summary">
               <strong>{profileCompletion}%</strong>
-              <span>Profile complete</span>
+              <span>{text.profileComplete}</span>
 
-              <span className={`status-badge ${approvalStatus}`}>
-                {approvalStatus}
+              <span
+                className={`status-badge ${approvalStatus}`}
+              >
+                {text.status[approvalStatus] || approvalStatus}
               </span>
             </div>
           </div>
@@ -387,24 +590,16 @@ export default function StartBusiness() {
                 }`}
               >
                 <span>{number}</span>
-                <small>
-                  {
-                    [
-                      "Business",
-                      "Location",
-                      "Services",
-                      "Availability",
-                      "Preview",
-                    ][number - 1]
-                  }
-                </small>
+                <small>{text.steps[number - 1]}</small>
               </div>
             ))}
           </div>
 
-          {message && (
+          {messageKey && (
             <div className="business-success" role="status">
-              {message}
+              {messageKey === "saved"
+                ? text.savedMessage
+                : text.submittedMessage}
             </div>
           )}
 
@@ -416,47 +611,40 @@ export default function StartBusiness() {
 
           {step === 1 && (
             <section className="form-step">
-              <h2>Business Details</h2>
+              <h2>{text.businessDetails}</h2>
 
               <div className="business-form-grid">
                 <label>
-                  Business name *
+                  {text.businessName} *
                   <input
                     name="businessName"
                     value={form.businessName}
                     onChange={handleChange}
-                    placeholder="Example: Anita's Tiffin Service"
+                    placeholder={text.businessNamePlaceholder}
                   />
                 </label>
 
                 <label>
-                  Business category *
+                  {text.businessCategory} *
                   <select
                     name="category"
                     value={form.category}
                     onChange={handleChange}
                   >
-                    <option value="">Select category</option>
-                    <option value="Tiffin Services">
-                      Tiffin Services
+                    <option value="">
+                      {text.selectCategory}
                     </option>
-                    <option value="Tailoring">Tailoring</option>
-                    <option value="Beauty Services">
-                      Beauty Services
-                    </option>
-                    <option value="Handicrafts">
-                      Handicrafts
-                    </option>
-                    <option value="Home Bakery">
-                      Home Bakery
-                    </option>
-                    <option value="Tutoring">Tutoring</option>
-                    <option value="Other">Other</option>
+
+                    {categories.map((category) => (
+                      <option value={category} key={category}>
+                        {displayCategory(category)}
+                      </option>
+                    ))}
                   </select>
                 </label>
 
                 <label>
-                  Experience in years
+                  {text.experience}
                   <input
                     type="number"
                     min="0"
@@ -468,13 +656,15 @@ export default function StartBusiness() {
                 </label>
 
                 <label className="full-field">
-                  Business description *
+                  {text.businessDescription} *
                   <textarea
                     name="description"
                     value={form.description}
                     onChange={handleChange}
                     rows="5"
-                    placeholder="Describe your business and what makes it special"
+                    placeholder={
+                      text.businessDescriptionPlaceholder
+                    }
                   />
                 </label>
               </div>
@@ -483,11 +673,11 @@ export default function StartBusiness() {
 
           {step === 2 && (
             <section className="form-step">
-              <h2>Business Location</h2>
+              <h2>{text.businessLocation}</h2>
 
               <div className="business-form-grid">
                 <label className="full-field">
-                  Address
+                  {text.address}
                   <input
                     name="address"
                     value={form.address}
@@ -496,7 +686,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Locality *
+                  {text.locality} *
                   <input
                     name="locality"
                     value={form.locality}
@@ -505,7 +695,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  City *
+                  {text.city} *
                   <input
                     name="city"
                     value={form.city}
@@ -514,7 +704,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  PIN code *
+                  {text.pinCode} *
                   <input
                     name="pinCode"
                     value={form.pinCode}
@@ -525,12 +715,12 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Service areas
+                  {text.serviceAreas}
                   <input
                     name="serviceAreas"
                     value={form.serviceAreas}
                     onChange={handleChange}
-                    placeholder="Ghaziabad, Noida, Delhi"
+                    placeholder={text.serviceAreasPlaceholder}
                   />
                 </label>
               </div>
@@ -539,11 +729,11 @@ export default function StartBusiness() {
 
           {step === 3 && (
             <section className="form-step">
-              <h2>Services and Pricing</h2>
+              <h2>{text.servicesPricing}</h2>
 
               <div className="business-form-grid">
                 <label>
-                  Service name *
+                  {text.serviceName} *
                   <input
                     name="serviceName"
                     value={form.serviceName}
@@ -552,7 +742,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Starting price *
+                  {text.startingPrice} *
                   <input
                     type="number"
                     min="0"
@@ -563,7 +753,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label className="full-field">
-                  Service description
+                  {text.serviceDescription}
                   <textarea
                     name="serviceDescription"
                     value={form.serviceDescription}
@@ -573,7 +763,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Minimum price
+                  {text.minimumPrice}
                   <input
                     type="number"
                     min="0"
@@ -584,7 +774,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Maximum price
+                  {text.maximumPrice}
                   <input
                     type="number"
                     min="0"
@@ -599,9 +789,11 @@ export default function StartBusiness() {
 
           {step === 4 && (
             <section className="form-step">
-              <h2>Availability</h2>
+              <h2>{text.availability}</h2>
 
-              <p className="field-heading">Working days *</p>
+              <p className="field-heading">
+                {text.workingDays} *
+              </p>
 
               <div className="days-grid">
                 {days.map((day) => (
@@ -611,14 +803,15 @@ export default function StartBusiness() {
                       checked={form.workingDays.includes(day)}
                       onChange={() => handleDayChange(day)}
                     />
-                    {day}
+
+                    {displayDay(day)}
                   </label>
                 ))}
               </div>
 
               <div className="business-form-grid availability-grid">
                 <label>
-                  Opening time *
+                  {text.openingTime} *
                   <input
                     type="time"
                     name="openingTime"
@@ -628,7 +821,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  Closing time *
+                  {text.closingTime} *
                   <input
                     type="time"
                     name="closingTime"
@@ -638,7 +831,7 @@ export default function StartBusiness() {
                 </label>
 
                 <label>
-                  WhatsApp number
+                  {text.whatsappNumber}
                   <input
                     name="whatsappNumber"
                     value={form.whatsappNumber}
@@ -655,7 +848,8 @@ export default function StartBusiness() {
                     checked={form.homeDelivery}
                     onChange={handleChange}
                   />
-                  Home delivery available
+
+                  {text.homeDeliveryAvailable}
                 </label>
               </div>
             </section>
@@ -663,40 +857,54 @@ export default function StartBusiness() {
 
           {step === 5 && (
             <section className="form-step">
-              <h2>Preview Your Profile</h2>
+              <h2>{text.previewProfile}</h2>
 
               <div className="profile-preview">
-                <h3>{form.businessName || "Business name"}</h3>
-                <p>{form.category}</p>
+                <h3>
+                  {form.businessName ||
+                    text.businessNameFallback}
+                </h3>
+
+                <p>{displayCategory(form.category)}</p>
                 <p>{form.description}</p>
 
                 <dl>
                   <div>
-                    <dt>Location</dt>
+                    <dt>{text.location}</dt>
                     <dd>
-                      {form.locality}, {form.city} – {form.pinCode}
+                      {form.locality}, {form.city} –{" "}
+                      {form.pinCode}
                     </dd>
                   </div>
 
                   <div>
-                    <dt>Service</dt>
+                    <dt>{text.service}</dt>
                     <dd>
-                      {form.serviceName} — ₹{form.startingPrice}
+                      {form.serviceName} — ₹
+                      {form.startingPrice}
                     </dd>
                   </div>
 
                   <div>
-                    <dt>Availability</dt>
+                    <dt>{text.availability}</dt>
                     <dd>
-                      {form.workingDays.join(", ")}
+                      {form.workingDays
+                        .map(displayDay)
+                        .join(", ")}
+
                       <br />
+
                       {form.openingTime} – {form.closingTime}
                     </dd>
                   </div>
 
                   <div>
-                    <dt>Home delivery</dt>
-                    <dd>{form.homeDelivery ? "Yes" : "No"}</dd>
+                    <dt>{text.homeDelivery}</dt>
+                    <dd>
+                      {form.homeDelivery
+                        ? text.yes
+                        : text.no}
+                    </dd>
                   </div>
                 </dl>
               </div>
@@ -711,7 +919,7 @@ export default function StartBusiness() {
                 onClick={previousStep}
                 disabled={saving}
               >
-                Back
+                {text.back}
               </button>
             )}
 
@@ -721,7 +929,7 @@ export default function StartBusiness() {
               onClick={saveDraft}
               disabled={saving}
             >
-              {saving ? "Saving..." : "Save Draft"}
+              {saving ? text.saving : text.saveDraft}
             </button>
 
             {step < 5 ? (
@@ -729,19 +937,25 @@ export default function StartBusiness() {
                 type="button"
                 className="next-button"
                 onClick={nextStep}
+                disabled={saving}
               >
-                Next
+                {text.next}
               </button>
             ) : (
               <button
                 type="button"
                 className="submit-button"
                 onClick={submitProfile}
-                disabled={saving || approvalStatus === "pending"}
+                disabled={
+                  saving ||
+                  approvalStatus === "pending" ||
+                  approvalStatus === "approved"
+                }
               >
-                {approvalStatus === "pending"
-                  ? "Awaiting Approval"
-                  : "Submit for Approval"}
+                {approvalStatus === "pending" ||
+                approvalStatus === "approved"
+                  ? text.awaitingApproval
+                  : text.submitApproval}
               </button>
             )}
           </div>
