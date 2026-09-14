@@ -192,3 +192,9 @@
   text-decoration: none !important;
   background: #e99230 !important;
 }
+
+.navbar-links .active-link {
+  color: var(--saffron);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+}

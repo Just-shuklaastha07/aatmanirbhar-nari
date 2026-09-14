@@ -5,12 +5,7 @@ import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
-
-  const {
-    user,
-    isAuthenticated,
-    logout,
-  } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const [language, setLanguage] = useState("EN");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -25,14 +20,13 @@ export default function Navbar() {
     navigate("/");
   };
 
+  const getNavLinkClass = ({ isActive }) =>
+    isActive ? "active-link" : "";
+
   return (
     <nav className="navbar" aria-label="Main navigation">
       <div className="navbar-brand">
-        <Link
-          to="/"
-          className="logo"
-          onClick={closeMenu}
-        >
+        <Link to="/" className="logo" onClick={closeMenu}>
           <span className="logo-mark" aria-hidden="true">
             AN
           </span>
@@ -45,38 +39,95 @@ export default function Navbar() {
           className="menu-toggle"
           aria-label="Toggle navigation menu"
           aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((previous) => !previous)}
+          onClick={() =>
+            setMenuOpen((previousMenuState) => !previousMenuState)
+          }
         >
           ☰
         </button>
       </div>
 
       <div className={`navbar-links ${menuOpen ? "active" : ""}`}>
-        <NavLink to="/" onClick={closeMenu}>
+        <NavLink
+          to="/"
+          end
+          className={getNavLinkClass}
+          onClick={closeMenu}
+        >
           Home
         </NavLink>
 
-        <NavLink to="/explore" onClick={closeMenu}>
+        <NavLink
+          to="/explore"
+          className={getNavLinkClass}
+          onClick={closeMenu}
+        >
           Explore Businesses
         </NavLink>
 
-        {user?.role === "entrepreneur" && (
-          <NavLink to="/start" onClick={closeMenu}>
-            My Business
-          </NavLink>
-        )}
-
         {!isAuthenticated && (
-          <NavLink to="/start" onClick={closeMenu}>
+          <NavLink
+            to="/start"
+            className={getNavLinkClass}
+            onClick={closeMenu}
+          >
             Start Your Business
           </NavLink>
         )}
 
-        <NavLink to="/learn" onClick={closeMenu}>
+        {isAuthenticated && user?.role === "customer" && (
+          <NavLink
+            to="/my-inquiries"
+            className={getNavLinkClass}
+            onClick={closeMenu}
+          >
+            My Inquiries
+          </NavLink>
+        )}
+
+        {isAuthenticated && user?.role === "entrepreneur" && (
+          <>
+            <NavLink
+              to="/start"
+              className={getNavLinkClass}
+              onClick={closeMenu}
+            >
+              My Business
+            </NavLink>
+
+            <NavLink
+              to="/business-inquiries"
+              className={getNavLinkClass}
+              onClick={closeMenu}
+            >
+              Customer Inquiries
+            </NavLink>
+          </>
+        )}
+
+        {isAuthenticated && user?.role === "admin" && (
+          <NavLink
+            to="/admin"
+            className={getNavLinkClass}
+            onClick={closeMenu}
+          >
+            Admin Dashboard
+          </NavLink>
+        )}
+
+        <NavLink
+          to="/learn"
+          className={getNavLinkClass}
+          onClick={closeMenu}
+        >
           Learn
         </NavLink>
 
-        <NavLink to="/about" onClick={closeMenu}>
+        <NavLink
+          to="/about"
+          className={getNavLinkClass}
+          onClick={closeMenu}
+        >
           About
         </NavLink>
 
@@ -84,7 +135,9 @@ export default function Navbar() {
           <select
             aria-label="Select language"
             value={language}
-            onChange={(event) => setLanguage(event.target.value)}
+            onChange={(event) =>
+              setLanguage(event.target.value)
+            }
           >
             <option value="EN">English</option>
             <option value="HI">हिन्दी</option>
@@ -93,7 +146,7 @@ export default function Navbar() {
           {isAuthenticated ? (
             <>
               <span className="navbar-user">
-                Hi, {user?.fullName?.split(" ")[0]}
+                Hi, {user?.fullName?.split(" ")[0] || "User"}
               </span>
 
               <button
