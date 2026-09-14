@@ -2,17 +2,39 @@ import { useCallback, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import InquiryForm from "../components/InquiryForm";
+import { useLanguage } from "../context/LanguageContext";
 import { getApprovedBusinesses } from "../services/exploreService";
 import "./ExploreBusiness.css";
 
-const categories = [
-  "Tiffin Services",
-  "Tailoring",
-  "Beauty Services",
-  "Handicrafts",
-  "Home Bakery",
-  "Tutoring",
-  "Other",
+const categoryOptions = [
+  {
+    value: "Tiffin Services",
+    translation: "explore.categories.tiffin",
+  },
+  {
+    value: "Tailoring",
+    translation: "explore.categories.tailoring",
+  },
+  {
+    value: "Beauty Services",
+    translation: "explore.categories.beauty",
+  },
+  {
+    value: "Handicrafts",
+    translation: "explore.categories.handicrafts",
+  },
+  {
+    value: "Home Bakery",
+    translation: "explore.categories.bakery",
+  },
+  {
+    value: "Tutoring",
+    translation: "explore.categories.tutoring",
+  },
+  {
+    value: "Other",
+    translation: "explore.categories.other",
+  },
 ];
 
 const getCategoryIcon = (category) => {
@@ -32,7 +54,17 @@ const getCategoryIcon = (category) => {
   }
 };
 
+const getCategoryTranslationKey = (category) => {
+  const categoryOption = categoryOptions.find(
+    (option) => option.value === category
+  );
+
+  return categoryOption?.translation;
+};
+
 export default function ExploreBusiness() {
+  const { t } = useLanguage();
+
   const [businesses, setBusinesses] = useState([]);
 
   const [filters, setFilters] = useState({
@@ -94,20 +126,21 @@ export default function ExploreBusiness() {
     setActiveFilters(emptyFilters);
   };
 
+  const translateCategory = (category) => {
+    const translationKey = getCategoryTranslationKey(category);
+
+    return translationKey ? t(translationKey) : category;
+  };
+
   return (
     <>
       <Navbar />
 
       <main className="explore-page">
         <section className="explore-heading">
-          <p>DISCOVER LOCAL TALENT</p>
-
-          <h1>Explore Women-led Businesses</h1>
-
-          <span>
-            Find trusted products and services offered by women entrepreneurs
-            near you.
-          </span>
+          <p>{t("explore.label")}</p>
+          <h1>{t("explore.title")}</h1>
+          <span>{t("explore.description")}</span>
         </section>
 
         <form className="explore-filters" onSubmit={handleSubmit}>
@@ -116,8 +149,8 @@ export default function ExploreBusiness() {
             name="search"
             value={filters.search}
             onChange={handleChange}
-            placeholder="Search businesses or services"
-            aria-label="Search businesses"
+            placeholder={t("explore.searchPlaceholder")}
+            aria-label={t("explore.searchPlaceholder")}
           />
 
           <input
@@ -125,27 +158,29 @@ export default function ExploreBusiness() {
             name="city"
             value={filters.city}
             onChange={handleChange}
-            placeholder="Enter city"
-            aria-label="Filter by city"
+            placeholder={t("explore.cityPlaceholder")}
+            aria-label={t("explore.cityPlaceholder")}
           />
 
           <select
             name="category"
             value={filters.category}
             onChange={handleChange}
-            aria-label="Filter by category"
+            aria-label={t("explore.allCategories")}
           >
-            <option value="">All categories</option>
+            <option value="">
+              {t("explore.allCategories")}
+            </option>
 
-            {categories.map((category) => (
-              <option value={category} key={category}>
-                {category}
+            {categoryOptions.map((category) => (
+              <option value={category.value} key={category.value}>
+                {t(category.translation)}
               </option>
             ))}
           </select>
 
           <button type="submit" className="search-button">
-            Search
+            {t("explore.search")}
           </button>
 
           <button
@@ -153,24 +188,29 @@ export default function ExploreBusiness() {
             className="clear-button"
             onClick={clearFilters}
           >
-            Clear
+            {t("explore.clear")}
           </button>
         </form>
 
         {error && <div className="explore-error">{error}</div>}
 
         {loading ? (
-          <p className="explore-status">Loading businesses...</p>
+          <p className="explore-status">
+            {t("explore.loading")}
+          </p>
         ) : businesses.length === 0 ? (
           <section className="explore-empty">
-            <h2>No businesses found</h2>
-            <p>Try changing your search or filters.</p>
+            <h2>{t("explore.noBusinesses")}</h2>
+            <p>{t("explore.changeFilters")}</p>
           </section>
         ) : (
           <>
             <p className="result-count">
-              {businesses.length} approved{" "}
-              {businesses.length === 1 ? "business" : "businesses"} found
+              {businesses.length} {t("explore.approved")}{" "}
+              {businesses.length === 1
+                ? t("explore.business")
+                : t("explore.businesses")}{" "}
+              {t("explore.found")}
             </p>
 
             <section className="explore-grid">
@@ -191,15 +231,15 @@ export default function ExploreBusiness() {
 
                   <div className="explore-card-content">
                     <span className="category-label">
-                      {business.category}
+                      {translateCategory(business.category)}
                     </span>
 
                     <h2>{business.businessName}</h2>
 
                     <p className="owner-name">
-                      By{" "}
+                      {t("explore.by")}{" "}
                       {business.owner?.fullName ||
-                        "Local entrepreneur"}
+                        t("explore.localEntrepreneur")}
                     </p>
 
                     <p className="card-description">
@@ -217,7 +257,7 @@ export default function ExploreBusiness() {
                       </span>
                     </div>
 
-                    <h3>Services</h3>
+                    <h3>{t("explore.services")}</h3>
 
                     {business.services?.length > 0 ? (
                       <ul className="card-services">
@@ -228,16 +268,16 @@ export default function ExploreBusiness() {
                               <span>{service.name}</span>
 
                               <strong>
-                                From ₹{service.startingPrice}
+                                {t("explore.from")} ₹
+                                {service.startingPrice}
                               </strong>
                             </li>
                           ))}
                       </ul>
                     ) : (
-                      <p>No services listed.</p>
+                      <p>{t("explore.noServices")}</p>
                     )}
 
-                    {/* Add the Send Inquiry button here */}
                     <button
                       type="button"
                       className="inquiry-button"
@@ -245,7 +285,7 @@ export default function ExploreBusiness() {
                         setSelectedBusiness(business)
                       }
                     >
-                      Send Inquiry
+                      {t("explore.sendInquiry")}
                     </button>
 
                     {business.whatsappNumber ? (
@@ -255,7 +295,7 @@ export default function ExploreBusiness() {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Contact on WhatsApp
+                        {t("explore.whatsapp")}
                       </a>
                     ) : (
                       <button
@@ -263,7 +303,7 @@ export default function ExploreBusiness() {
                         className="contact-button disabled-button"
                         disabled
                       >
-                        Contact unavailable
+                        {t("explore.contactUnavailable")}
                       </button>
                     )}
                   </div>
@@ -274,7 +314,6 @@ export default function ExploreBusiness() {
         )}
       </main>
 
-      {/* Inquiry popup */}
       {selectedBusiness && (
         <InquiryForm
           businessId={selectedBusiness._id}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendInquiry } from "../services/inquiryService";
+import { useLanguage } from "../context/LanguageContext";
 import "./InquiryForm.css";
 
 export default function InquiryForm({
@@ -9,6 +10,7 @@ export default function InquiryForm({
   onClose,
 }) {
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     subject: "",
@@ -51,17 +53,17 @@ export default function InquiryForm({
     }
 
     if (user.role !== "customer") {
-      setError("Only customer accounts can send inquiries.");
+      setError(t("inquiry.customerOnly"));
       return;
     }
 
     if (formData.subject.trim().length < 3) {
-      setError("Subject must contain at least 3 characters.");
+      setError(t("inquiry.invalidSubject"));
       return;
     }
 
     if (formData.message.trim().length < 10) {
-      setError("Message must contain at least 10 characters.");
+      setError(t("inquiry.invalidMessage"));
       return;
     }
 
@@ -76,7 +78,8 @@ export default function InquiryForm({
         message: formData.message.trim(),
       });
 
-      setSuccessMessage("Your inquiry was sent successfully.");
+      setSuccessMessage(t("inquiry.success"));
+
       setFormData({
         subject: "",
         message: "",
@@ -107,41 +110,56 @@ export default function InquiryForm({
         <button
           type="button"
           className="inquiry-close"
-          aria-label="Close inquiry form"
+          aria-label={t("inquiry.close")}
           onClick={onClose}
         >
           ×
         </button>
 
-        <p className="inquiry-label">CUSTOMER INQUIRY</p>
-        <h2 id="inquiry-title">Contact {businessName}</h2>
+        <p className="inquiry-label">
+          {t("inquiry.label")}
+        </p>
 
-        {error && <div className="inquiry-error">{error}</div>}
+        <h2 id="inquiry-title">
+          {t("inquiry.contact")} {businessName}
+        </h2>
+
+        {error && (
+          <div className="inquiry-error">{error}</div>
+        )}
 
         {successMessage && (
-          <div className="inquiry-success">{successMessage}</div>
+          <div className="inquiry-success">
+            {successMessage}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <label htmlFor="inquiry-subject">Subject</label>
+          <label htmlFor="inquiry-subject">
+            {t("inquiry.subject")}
+          </label>
+
           <input
             id="inquiry-subject"
             type="text"
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            placeholder="For example: Custom order request"
+            placeholder={t("inquiry.subjectPlaceholder")}
             maxLength="120"
             required
           />
 
-          <label htmlFor="inquiry-message">Message</label>
+          <label htmlFor="inquiry-message">
+            {t("inquiry.message")}
+          </label>
+
           <textarea
             id="inquiry-message"
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder="Describe the product or service you need"
+            placeholder={t("inquiry.messagePlaceholder")}
             rows="6"
             maxLength="1000"
             required
@@ -152,7 +170,9 @@ export default function InquiryForm({
             className="send-inquiry-button"
             disabled={submitting}
           >
-            {submitting ? "Sending..." : "Send Inquiry"}
+            {submitting
+              ? t("inquiry.sending")
+              : t("inquiry.send")}
           </button>
         </form>
       </section>
