@@ -245,3 +245,267 @@
     width: 100%;
   }
 }
+
+/* Bilingual layout and text-overlap fixes */
+
+.business-inquiries-page {
+  min-height: calc(100vh - 80px);
+  padding: 60px 20px 80px;
+  background: #fff9f3;
+}
+
+.business-inquiries-header {
+  max-width: 1000px;
+  margin: 0 auto 45px;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.business-inquiries-header p {
+  margin: 0 0 10px;
+  color: #4f8a6d;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.business-inquiries-header h1 {
+  margin: 0 0 16px;
+  color: #8e2857;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.business-inquiries-header span {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #5f555d;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.received-inquiries-list {
+  width: 100%;
+  max-width: 1190px;
+  margin: 0 auto;
+}
+
+.received-inquiry-card {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 28px;
+  padding: 32px;
+  overflow: hidden;
+}
+
+.received-inquiry-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.received-inquiry-heading > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.received-inquiry-heading h2 {
+  margin: 0 0 10px;
+  color: #8e2857;
+  font-size: 1.6rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.received-inquiry-heading p {
+  margin: 0;
+  color: #4f8a6d;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.received-status {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.customer-details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.customer-details > div {
+  min-width: 0;
+  padding: 22px 16px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.customer-details span,
+.customer-details strong {
+  display: block;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.customer-details span {
+  margin-bottom: 8px;
+}
+
+.customer-message,
+.existing-response {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 24px 28px;
+  overflow: hidden;
+}
+
+.customer-message h3,
+.existing-response h3 {
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+
+.customer-message p,
+.existing-response p {
+  margin: 0 0 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.customer-message small,
+.existing-response small {
+  display: block;
+  line-height: 1.5;
+}
+
+.response-form {
+  margin-top: 24px;
+}
+
+.response-form label {
+  display: block;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.response-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  padding: 14px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.inquiry-management-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.respond-button,
+.read-button,
+.close-inquiry-button {
+  min-height: 46px;
+  padding: 11px 22px;
+  white-space: normal;
+  line-height: 1.3;
+}
+
+/* Tablet */
+
+@media (max-width: 900px) {
+  .business-inquiries-page {
+    padding-top: 45px;
+  }
+
+  .customer-details {
+    grid-template-columns: 1fr;
+  }
+
+  .received-inquiry-card {
+    padding: 24px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+  .business-inquiries-page {
+    padding: 32px 12px 60px;
+  }
+
+  .business-inquiries-header {
+    margin-bottom: 30px;
+    padding: 0 8px;
+  }
+
+  .business-inquiries-header p {
+    font-size: 0.95rem;
+  }
+
+  .business-inquiries-header h1 {
+    margin-bottom: 12px;
+    font-size: 2.15rem;
+    line-height: 1.25;
+  }
+
+  .business-inquiries-header span {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .received-inquiry-card {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
+
+  .received-inquiry-heading {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .received-inquiry-heading h2 {
+    font-size: 1.3rem;
+  }
+
+  .received-status {
+    align-self: flex-start;
+  }
+
+  .customer-details {
+    gap: 12px;
+  }
+
+  .customer-message,
+  .existing-response {
+    padding: 20px 15px;
+  }
+
+  .inquiry-management-actions {
+    flex-direction: column;
+  }
+
+  .respond-button,
+  .read-button,
+  .close-inquiry-button {
+    width: 100%;
+  }
+}
