@@ -466,3 +466,40 @@
     padding: 35px 20px;
   }
 }
+
+/* Hero layout without placeholder image */
+
+.hero-section {
+  display: block;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 90px 20px;
+}
+
+.hero-text {
+  max-width: 800px;
+}
+
+.hero-image {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 55px 16px;
+  }
+
+  .hero-text {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .search-form,
+  .hero-actions {
+    justify-content: center;
+  }
+}
+.hero-text {
+  margin: 0 auto;
+  text-align: center;
+}

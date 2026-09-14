@@ -1,13 +1,14 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
+  const { language, changeLanguage, t } = useLanguage();
 
-  const [language, setLanguage] = useState("EN");
   const [menuOpen, setMenuOpen] = useState(false);
 
   const closeMenu = () => {
@@ -40,7 +41,7 @@ export default function Navbar() {
           aria-label="Toggle navigation menu"
           aria-expanded={menuOpen}
           onClick={() =>
-            setMenuOpen((previousMenuState) => !previousMenuState)
+            setMenuOpen((previousState) => !previousState)
           }
         >
           ☰
@@ -54,7 +55,7 @@ export default function Navbar() {
           className={getNavLinkClass}
           onClick={closeMenu}
         >
-          Home
+          {t("navbar.home")}
         </NavLink>
 
         <NavLink
@@ -62,7 +63,7 @@ export default function Navbar() {
           className={getNavLinkClass}
           onClick={closeMenu}
         >
-          Explore Businesses
+          {t("navbar.explore")}
         </NavLink>
 
         {!isAuthenticated && (
@@ -71,28 +72,28 @@ export default function Navbar() {
             className={getNavLinkClass}
             onClick={closeMenu}
           >
-            Start Your Business
+            {t("navbar.startBusiness")}
           </NavLink>
         )}
 
-        {isAuthenticated && user?.role === "customer" && (
+        {user?.role === "customer" && (
           <NavLink
             to="/my-inquiries"
             className={getNavLinkClass}
             onClick={closeMenu}
           >
-            My Inquiries
+            {t("navbar.myInquiries")}
           </NavLink>
         )}
 
-        {isAuthenticated && user?.role === "entrepreneur" && (
+        {user?.role === "entrepreneur" && (
           <>
             <NavLink
               to="/start"
               className={getNavLinkClass}
               onClick={closeMenu}
             >
-              My Business
+              {t("navbar.myBusiness")}
             </NavLink>
 
             <NavLink
@@ -100,18 +101,18 @@ export default function Navbar() {
               className={getNavLinkClass}
               onClick={closeMenu}
             >
-              Customer Inquiries
+              {t("navbar.customerInquiries")}
             </NavLink>
           </>
         )}
 
-        {isAuthenticated && user?.role === "admin" && (
+        {user?.role === "admin" && (
           <NavLink
             to="/admin"
             className={getNavLinkClass}
             onClick={closeMenu}
           >
-            Admin Dashboard
+            {t("navbar.adminDashboard")}
           </NavLink>
         )}
 
@@ -120,7 +121,7 @@ export default function Navbar() {
           className={getNavLinkClass}
           onClick={closeMenu}
         >
-          Learn
+          {t("navbar.learn")}
         </NavLink>
 
         <NavLink
@@ -128,7 +129,7 @@ export default function Navbar() {
           className={getNavLinkClass}
           onClick={closeMenu}
         >
-          About
+          {t("navbar.about")}
         </NavLink>
 
         <div className="navbar-actions">
@@ -136,17 +137,18 @@ export default function Navbar() {
             aria-label="Select language"
             value={language}
             onChange={(event) =>
-              setLanguage(event.target.value)
+              changeLanguage(event.target.value)
             }
           >
-            <option value="EN">English</option>
-            <option value="HI">हिन्दी</option>
+            <option value="EN">{t("navbar.english")}</option>
+            <option value="HI">{t("navbar.hindi")}</option>
           </select>
 
           {isAuthenticated ? (
             <>
               <span className="navbar-user">
-                Hi, {user?.fullName?.split(" ")[0] || "User"}
+                {t("navbar.greeting")},{" "}
+                {user?.fullName?.split(" ")[0] || "User"}
               </span>
 
               <button
@@ -154,7 +156,7 @@ export default function Navbar() {
                 className="logout-btn"
                 onClick={handleLogout}
               >
-                Logout
+                {t("navbar.logout")}
               </button>
             </>
           ) : (
@@ -164,7 +166,7 @@ export default function Navbar() {
                 className="login-btn"
                 onClick={closeMenu}
               >
-                Login
+                {t("navbar.login")}
               </Link>
 
               <Link
@@ -172,7 +174,7 @@ export default function Navbar() {
                 className="join-btn"
                 onClick={closeMenu}
               >
-                Join as Entrepreneur
+                {t("navbar.join")}
               </Link>
             </>
           )}

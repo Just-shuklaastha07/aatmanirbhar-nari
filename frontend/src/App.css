@@ -195,3 +195,122 @@
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+/* Shared layout corrections */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+main h1,
+main h2,
+main h3,
+main p {
+  overflow-wrap: break-word;
+}
+
+/* Prevent page headings from covering subtitles */
+
+.admin-header h1,
+.business-form-header h1,
+.explore-heading h1,
+.inquiries-header h1,
+.business-inquiries-header h1 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  line-height: 1.15;
+}
+
+.admin-header > p:last-child,
+.business-form-header > p,
+.explore-heading > span,
+.inquiries-header > span,
+.business-inquiries-header > span {
+  display: block;
+  margin-top: 0;
+  line-height: 1.5;
+}
+
+/* Business onboarding heading */
+
+.business-form-header {
+  display: block;
+  padding-bottom: 20px;
+}
+
+.business-form-header h1 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  letter-spacing: -1px;
+}
+
+/* Authentication headings */
+
+.auth-card h1,
+.auth-header h1 {
+  margin: 8px 0 16px;
+  line-height: 1.1;
+}
+
+.auth-card h1 + p,
+.auth-header h1 + p {
+  margin-top: 0;
+  line-height: 1.5;
+}
+
+/* Prevent sticky navbar from hiding page headings */
+
+section,
+article {
+  scroll-margin-top: 100px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* Consistent spacing for page headings */
+
+.admin-header,
+.explore-heading,
+.business-inquiries-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-header > *,
+.explore-heading > *,
+.business-inquiries-header > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.admin-header h1,
+.explore-heading h1,
+.business-inquiries-header h1 {
+  line-height: 1.15 !important;
+}
+
+.admin-header > p:last-child,
+.explore-heading > span,
+.business-inquiries-header > span {
+  display: block;
+  line-height: 1.5 !important;
+}

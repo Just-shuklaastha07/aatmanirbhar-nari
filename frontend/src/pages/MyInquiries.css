@@ -181,3 +181,35 @@
     flex-direction: column;
   }
 }
+.inquiries-header {
+  display: flex;
+  max-width: 900px;
+  margin: 0 auto 44px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.inquiries-header > p {
+  margin: 0;
+  color: var(--green);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  line-height: 1.2;
+}
+
+.inquiries-header h1 {
+  margin: 0;
+  color: var(--plum);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1.15;
+}
+
+.inquiries-header > span {
+  display: block;
+  margin: 0;
+  color: #675d62;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
