@@ -12,6 +12,8 @@ import Login from "./pages/auth/Login";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import MyInquiries from "./pages/MyInquiries";
+import BusinessInquiries from "./pages/BusinessInquiries";
 
 function App() {
   return (
@@ -42,6 +44,22 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/my-inquiries"
+          element={
+            <ProtectedRoute allowedRoles={["customer"]}>
+              <MyInquiries />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+  path="/business-inquiries"
+  element={
+    <ProtectedRoute allowedRoles={["entrepreneur"]}>
+      <BusinessInquiries />
+    </ProtectedRoute>
+  }
+/>
 
         <Route
           path="*"

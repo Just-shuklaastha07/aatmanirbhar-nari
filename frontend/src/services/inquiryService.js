@@ -1,7 +1,7 @@
 const API_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-const getHeaders = () => {
+const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
 
   return {
@@ -20,6 +20,7 @@ const handleResponse = async (response) => {
   return data;
 };
 
+// Customer sends an inquiry
 export const sendInquiry = async ({
   businessId,
   subject,
@@ -27,7 +28,7 @@ export const sendInquiry = async ({
 }) => {
   const response = await fetch(`${API_URL}/inquiries`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: getAuthHeaders(),
     body: JSON.stringify({
       businessId,
       subject,
@@ -38,28 +39,36 @@ export const sendInquiry = async ({
   return handleResponse(response);
 };
 
+// Customer views sent inquiries
 export const getSentInquiries = async () => {
   const response = await fetch(`${API_URL}/inquiries/sent`, {
-    headers: getHeaders(),
+    method: "GET",
+    headers: getAuthHeaders(),
   });
 
   return handleResponse(response);
 };
 
+// Entrepreneur views received inquiries
 export const getReceivedInquiries = async () => {
   const response = await fetch(`${API_URL}/inquiries/received`, {
-    headers: getHeaders(),
+    method: "GET",
+   headers: getAuthHeaders(),
   });
 
   return handleResponse(response);
 };
 
-export const updateInquiryStatus = async (inquiryId, status) => {
+// Entrepreneur marks an inquiry as read or closed
+export const updateInquiryStatus = async (
+  inquiryId,
+  status
+) => {
   const response = await fetch(
     `${API_URL}/inquiries/${inquiryId}/status`,
     {
       method: "PATCH",
-      headers: getHeaders(),
+      headers: getAuthHeaders(),
       body: JSON.stringify({ status }),
     }
   );
@@ -67,12 +76,16 @@ export const updateInquiryStatus = async (inquiryId, status) => {
   return handleResponse(response);
 };
 
-export const respondToInquiry = async (inquiryId, responseMessage) => {
+// Entrepreneur sends a response
+export const respondToInquiry = async (
+  inquiryId,
+  responseMessage
+) => {
   const response = await fetch(
     `${API_URL}/inquiries/${inquiryId}/respond`,
     {
       method: "PATCH",
-      headers: getHeaders(),
+      headers: getAuthHeaders(),
       body: JSON.stringify({
         response: responseMessage,
       }),

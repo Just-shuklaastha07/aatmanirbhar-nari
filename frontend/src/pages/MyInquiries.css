@@ -1,0 +1,183 @@
+.my-inquiries-page {
+  min-height: calc(100vh - 70px);
+  padding: 48px 20px 70px;
+  color: var(--charcoal);
+  background: var(--cream);
+}
+
+.inquiries-header {
+  max-width: 900px;
+  margin: 0 auto 32px;
+  text-align: center;
+}
+
+.inquiries-header > p {
+  margin: 0 0 8px;
+  color: var(--green);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.inquiries-header h1 {
+  margin: 0 0 10px;
+  color: var(--plum);
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.inquiries-header span {
+  color: #675d62;
+}
+
+.inquiries-list,
+.inquiries-error,
+.inquiries-state,
+.inquiries-empty {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.inquiries-list {
+  display: grid;
+  gap: 22px;
+}
+
+.customer-inquiry-card {
+  padding: 26px;
+  background: white;
+  border: 1px solid #eadde3;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(41, 37, 42, 0.08);
+}
+
+.inquiry-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.inquiry-card-header h2 {
+  margin: 0 0 5px;
+  color: var(--plum);
+}
+
+.inquiry-card-header p {
+  margin: 0;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.inquiry-status {
+  padding: 6px 13px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.status-new {
+  color: #8a5b00;
+  background: #fff0bf;
+}
+
+.status-read {
+  color: #245d84;
+  background: #dceffc;
+}
+
+.status-responded {
+  color: #08643e;
+  background: #dff5e9;
+}
+
+.status-closed {
+  color: #5e565a;
+  background: #eceaec;
+}
+
+.inquiry-section {
+  margin-top: 22px;
+  padding: 18px;
+  background: #fff9f3;
+  border-radius: 9px;
+}
+
+.inquiry-section h3 {
+  margin: 0 0 9px;
+}
+
+.inquiry-section p,
+.entrepreneur-response p {
+  line-height: 1.6;
+}
+
+.inquiry-section small,
+.entrepreneur-response small {
+  color: #756a70;
+}
+
+.entrepreneur-response {
+  margin-top: 18px;
+  padding: 18px;
+  background: #e6f5ed;
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+}
+
+.entrepreneur-response h3 {
+  margin: 0;
+  color: var(--green);
+}
+
+.waiting-response {
+  margin-top: 18px;
+  padding: 15px;
+  color: #756a70;
+  background: #f2eff1;
+  border-radius: 8px;
+}
+
+.inquiries-error {
+  margin-bottom: 24px;
+  padding: 14px;
+  color: #a01818;
+  text-align: center;
+  background: #ffe5e5;
+  border-radius: 8px;
+}
+
+.inquiries-state,
+.inquiries-empty {
+  padding: 50px 20px;
+  text-align: center;
+  background: white;
+  border-radius: 14px;
+}
+
+.inquiries-empty h2 {
+  color: var(--plum);
+}
+
+.inquiries-empty a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 11px 20px;
+  color: white;
+  background: var(--plum);
+  border-radius: 7px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .my-inquiries-page {
+    padding: 32px 14px 50px;
+  }
+
+  .customer-inquiry-card {
+    padding: 19px;
+  }
+
+  .inquiry-card-header {
+    flex-direction: column;
+  }
+}
